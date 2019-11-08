@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Category
+{% endblock %}
+
+{% block header %}
+<h3 id='title'>Category</h3>
+<hr>
+<a class='btn btn-primary' href="{{ url_for('bookmark.add_bookmark') }}">Add Bookmark</a>
+<p>
+{% endblock %}
+
+{% block content %}
+<div class='table-responsive'>
+  <table class='table table-sm'>
+    <thead>
+      <tr>
+        <th scope='col'>Bookmark</th>
+        <th scope='col'>URL</th>
+        <th scope='col'>Category</th> 
+      </tr>
+    </thead>
+    <tbody id='bookmarks'></tbody>
+  </table>
+</div>
+<script>
+  $(function () {
+    my_bookmarks();
+  });
+</script>
+{% endblock %}

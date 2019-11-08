@@ -24,9 +24,9 @@ def index():
 def get_category():
     '''Get current user's categories.'''
     db = get_db()
-    category = db.execute(
+    categories = db.execute(
         'SELECT id, category FROM category WHERE user_id = ?', (g.user['id'],)).fetchall()
-    return jsonify(category)
+    return jsonify(categories)
 
 
 @bp.route('/category/add', methods=('GET', 'POST'))
@@ -43,7 +43,7 @@ def add_category():
                 'INSERT INTO category (category, user_id) VALUES (?, ?)', (category, g.user['id']))
             db.commit()
             return redirect(url_for('index'))
-    return render_template('bookmark/category.html', id=0)
+    return render_template('bookmark/category.html', id=0, category={})
 
 
 @bp.route('/category/edit/<int:id>', methods=('GET', 'POST'))
@@ -92,12 +92,15 @@ def get_bookmark(category_id):
     '''Get current user's bookmark of specified category.'''
     db = get_db()
     if category_id == -1:
-        bookmark = db.execute('SELECT id, bookmark, url FROM bookmark WHERE user_id = ?',
-                              (g.user['id'])).fetchall()
+        category = 'All Bookmarks'
+        bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark WHERE user_id = ?',
+                              (g.user['id'],)).fetchall()
     else:
-        bookmark = db.execute('SELECT id, bookmark, url FROM bookmark WHERE category_id = ? AND user_id = ?',
+        category = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
+                              (category_id, g.user['id'])).fetchone()['category']
+        bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark WHERE category_id = ? AND user_id = ?',
                               (category_id, g.user['id'])).fetchall()
-    return jsonify(bookmark)
+    return jsonify({'category': category, 'bookmarks': bookmarks})
 
 
 @bp.route('/bookmark/add', methods=('GET', 'POST'))
@@ -116,7 +119,7 @@ def add_bookmark():
                        ' VALUES (?, ?, ?, ?)', (bookmark, url, g.user['id'], category))
             db.commit()
             return redirect(url_for('index'))
-    return render_template('bookmark/bookmark.html', id=0)
+    return render_template('bookmark/bookmark.html', id=0, bookmark={})
 
 
 @bp.route('/bookmark/edit/<int:id>', methods=('GET', 'POST'))
