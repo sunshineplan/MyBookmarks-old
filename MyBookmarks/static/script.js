@@ -12,11 +12,14 @@ function my_categories() {
 function my_bookmarks(category_id = -1) {
   if (category_id == -1) {
     url = '/bookmark/get';
+    $('#edit_category').prop('hidden', true);
     $('#add_bookmark').prop('href', function () {
       return '/bookmark/add';
     });
   } else {
     url = '/bookmark/get/' + category_id;
+    $('#edit_category').prop('hidden', false);
+    $('#edit_category').prop('href', '/category/edit/' + category_id);
     $('#add_bookmark').prop('href', function () {
       return '/bookmark/add' + '?category_id=' + category_id;
     });
