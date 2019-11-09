@@ -3,7 +3,7 @@ function my_categories() {
     $('#category').empty();
     $('#categories').empty();
     $.each(json, function (i, item) {
-      $('#category').append($('<option>').prop('value', item.category));
+      $('#category-list').append($('<option>').prop('value', item.category));
       var $li = $("<li><a class='nav-link category' id='" + item.id + "'>" + item.category + ' (' + item.num + ')' + '</a></li>')
       $li.appendTo('#categories');
     });

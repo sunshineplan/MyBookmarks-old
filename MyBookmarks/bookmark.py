@@ -114,6 +114,8 @@ def add_bookmark():
     if category_id:
         category = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
                               (category_id, g.user['id'])).fetchone()['category']
+    else:
+        category = ''
     if request.method == 'POST':
         category = request.form.get('category')
         bookmark = request.form.get('bookmark')
@@ -121,8 +123,17 @@ def add_bookmark():
         if db.execute('SELECT id FROM bookmark WHERE url = ? AND user_id = ?', (url, g.user['id'])).fetchone() is not None:
             flash(f'Bookmark {url} is already existed.')
         else:
+            if category:
+                if category_id := db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, g.user['id'])).fetchone():
+                    category_id = category_id['id']
+                else:
+                    db.execute(
+                        'INSERT INTO category (category, user_id) VALUES (?, ?)', (category, g.user['id']))
+                    category_id = db.execute('SELECT last_insert_rowid() id').fetchone()['id']
+            else:
+                category_id = 0
             db.execute('INSERT INTO bookmark (bookmark, url, user_id, category_id)'
-                       ' VALUES (?, ?, ?, ?)', (bookmark, url, g.user['id'], category))
+                       ' VALUES (?, ?, ?, ?)', (bookmark, url, g.user['id'], category_id))
             db.commit()
             return redirect(url_for('index'))
     return render_template('bookmark/bookmark.html', id=0, bookmark={}, category=category)
