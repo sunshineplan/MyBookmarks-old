@@ -2,10 +2,9 @@ function my_categories() {
   categories = $.getJSON('/category/get', function (json) {
     $('#category').empty();
     $('#categories').empty();
-    $("#categories").append("<li><a class='nav-link category' id='-1'>All Bookmarks</a></li>");
     $.each(json, function (i, item) {
       $('#category').append($('<option>').prop('value', item.category));
-      var $li = $("<li><a class='nav-link category' id='" + item.id + "'>" + item.category + '</a></li>')
+      var $li = $("<li><a class='nav-link category' id='" + item.id + "'>" + item.category + ' (' + item.num + ')' + '</a></li>')
       $li.appendTo('#categories');
     });
   });

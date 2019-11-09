@@ -20,10 +20,9 @@
   {% if g.user %}
   <nav class='nav flex-column navbar-light sidebar'>
     <div>
-      <a class='navbar-brand'>Bookmarks</a>
-      <ul class='navbar-nav' id='categories'>
-        <li><a class='nav-link category' id='-1'>All Bookmarks</a></li>
-      </ul>
+      <a class='btn btn-primary btn-sm' href="{{ url_for('bookmark.add_category') }}">Add Category</a>
+      <a class='navbar-brand category' id='-1'>All Bookmarks</a>
+      <ul class='navbar-nav' id='categories'></ul>
     </div>
   </nav>
   {% endif %}

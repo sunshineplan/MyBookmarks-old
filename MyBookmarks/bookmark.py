@@ -21,8 +21,9 @@ def index():
 def get_category():
     '''Get current user's categories.'''
     db = get_db()
-    categories = db.execute(
-        'SELECT id, category FROM category WHERE user_id = ?', (g.user['id'],)).fetchall()
+    categories = db.execute('SELECT category.id, category, count(bookmark) num'
+                            ' FROM category LEFT JOIN bookmark ON category.id = category_id'
+                            ' WHERE category.user_id = ? GROUP BY category_id', (g.user['id'],)).fetchall()
     return jsonify(categories)
 
 
