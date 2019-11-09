@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h3>{% block title %}Add/Edit Category{% endblock %}</h3>
+<hr>
+{% endblock %}
+
+{% block content %}
+<form method='POST'>
+  <div class='form-group'>
+    <label for='category'>Category</label>
+    <input class='form-control' name='category' id='category' required>{{ request.form['category'] or category['category'] }}</input>
+  </div>
+  <input type='submit' value='{% if id == 0 %}Add{% else %}Save{% endif %}' class='btn btn-primary'>
+  <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
+</form>
+<hr>
+{% if id != 0 %}
+<form action="{{ url_for('category.delete_category', id=id) }}" method='POST'>
+  <input type='submit' value='Delete' class='btn btn-danger' onclick="return confirm('Are you sure?');">
+</form>
+{% endif %}
+{% endblock %}
