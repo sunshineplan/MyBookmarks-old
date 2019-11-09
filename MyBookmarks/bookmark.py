@@ -13,10 +13,7 @@ bp = Blueprint('bookmark', __name__)
 @login_required
 def index():
     '''Show all the bookmarks belong the current user.'''
-    db = get_db()
-    categories = db.execute(
-        'SELECT * FROM category WHERE user_id = ?', (g.user['id'],)).fetchall()
-    return render_template('bookmark/index.html', categories=categories)
+    return render_template('bookmark/index.html')
 
 
 @bp.route('/category/get', methods=('GET',))
