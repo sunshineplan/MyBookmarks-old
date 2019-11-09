@@ -93,13 +93,17 @@ def get_bookmark(category_id):
     db = get_db()
     if category_id == -1:
         category = 'All Bookmarks'
-        bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark WHERE user_id = ?',
-                              (g.user['id'],)).fetchall()
+        bookmarks = db.execute('SELECT bookmark, url, category FROM bookmark'
+                               ' LEFT JOIN category ON category_id = category.id'
+                               ' WHERE bookmark.user_id = ?',
+                               (g.user['id'],)).fetchall()
     else:
         category = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
                               (category_id, g.user['id'])).fetchone()['category']
-        bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark WHERE category_id = ? AND user_id = ?',
-                              (category_id, g.user['id'])).fetchall()
+        bookmarks = db.execute('SELECT bookmark, url FROM bookmark WHERE category_id = ? AND user_id = ?',
+                               (category_id, g.user['id'])).fetchall()
+        for i in bookmarks:
+            i['category'] = category
     return jsonify({'category': category, 'bookmarks': bookmarks})
 
 
