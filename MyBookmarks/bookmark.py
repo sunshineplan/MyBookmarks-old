@@ -109,8 +109,12 @@ def get_bookmark(category_id):
 @login_required
 def add_bookmark():
     '''Create a new bookmark for the current user.'''
+    category_id = request.args.get('category_id')
+    db = get_db()
+    if category_id:
+        category = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
+                              (category_id, g.user['id'])).fetchone()['category']
     if request.method == 'POST':
-        db = get_db()
         category = request.form.get('category')
         bookmark = request.form.get('bookmark')
         url = request.form.get('url')
@@ -121,7 +125,7 @@ def add_bookmark():
                        ' VALUES (?, ?, ?, ?)', (bookmark, url, g.user['id'], category))
             db.commit()
             return redirect(url_for('index'))
-    return render_template('bookmark/bookmark.html', id=0, bookmark={})
+    return render_template('bookmark/bookmark.html', id=0, bookmark={}, category=category)
 
 
 @bp.route('/bookmark/edit/<int:id>', methods=('GET', 'POST'))

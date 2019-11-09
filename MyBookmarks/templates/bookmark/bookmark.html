@@ -16,9 +16,9 @@
     <input class='form-control' name='url' id='url' required>{{ request.form['url'] or bookmark['url'] }}</input>
   </div>
   <div class='form-group'>
-    <label for='test'>Category</label>
-    <input class='form-control' list='category' name='category' id='test'>
-    <datalist id='category'>
+    <label for='category'>Category</label>
+    <input class='form-control' list='category-list' name='category' id='category' value="{{ bookmark['category'] or category}}">
+    <datalist id='category-list'>
     </datalist>
   </div>
   <input type='submit' value='{% if id == 0 %}Add{% else %}Save{% endif %}' class='btn btn-primary'>

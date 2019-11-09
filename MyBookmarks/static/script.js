@@ -12,8 +12,14 @@ function my_categories() {
 function my_bookmarks(category_id = -1) {
   if (category_id == -1) {
     url = '/bookmark/get';
+    $('#add_bookmark').prop('href', function () {
+      return '/bookmark/add';
+    });
   } else {
     url = '/bookmark/get/' + category_id;
+    $('#add_bookmark').prop('href', function () {
+      return '/bookmark/add' + '?category_id=' + category_id;
+    });
   };
   bookmarks = $.getJSON(url, function (json) {
     document.title = json.category + ' - My Bookmarks';
