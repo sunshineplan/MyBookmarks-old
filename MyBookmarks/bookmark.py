@@ -21,10 +21,14 @@ def index():
 def get_category():
     '''Get current user's categories.'''
     db = get_db()
+    total = db.execute('SELECT count(bookmark) num FROM bookmark WHERE user_id = ?',
+                       (g.user['id'],)).fetchone()['num']
+    uncategorized = db.execute('SELECT count(bookmark) num FROM bookmark WHERE category_id = 0 AND user_id = ?',
+                               (g.user['id'],)).fetchone()['num']
     categories = db.execute('SELECT category.id, category, count(bookmark) num'
                             ' FROM category LEFT JOIN bookmark ON category.id = category_id'
                             ' WHERE category.user_id = ? GROUP BY category_id', (g.user['id'],)).fetchall()
-    return jsonify(categories)
+    return jsonify({'total': total, 'uncategorized': uncategorized, 'categories': categories})
 
 
 @bp.route('/category/add', methods=('GET', 'POST'))
@@ -95,6 +99,10 @@ def get_bookmark(category_id):
                                ' LEFT JOIN category ON category_id = category.id'
                                ' WHERE bookmark.user_id = ?',
                                (g.user['id'],)).fetchall()
+    elif category_id == 0:
+        category = 'Uncategorized'
+        bookmarks = db.execute('SELECT bookmark, url FROM bookmark WHERE category_id = 0 AND user_id = ?',
+                               (g.user['id'],)).fetchall()
     else:
         category = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
                               (category_id, g.user['id'])).fetchone()['category']
@@ -129,7 +137,8 @@ def add_bookmark():
                 else:
                     db.execute(
                         'INSERT INTO category (category, user_id) VALUES (?, ?)', (category, g.user['id']))
-                    category_id = db.execute('SELECT last_insert_rowid() id').fetchone()['id']
+                    category_id = db.execute(
+                        'SELECT last_insert_rowid() id').fetchone()['id']
             else:
                 category_id = 0
             db.execute('INSERT INTO bookmark (bookmark, url, user_id, category_id)'

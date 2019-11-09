@@ -1,28 +1,30 @@
 function my_categories() {
   categories = $.getJSON('/category/get', function (json) {
-    $('#category').empty();
+    $('#category-list').empty();
     $('#categories').empty();
-    $.each(json, function (i, item) {
+    $('#-1.category').text('All Bookmarks (' + json.total + ')');
+    $.each(json.categories, function (i, item) {
       $('#category-list').append($('<option>').prop('value', item.category));
       var $li = $("<li><a class='nav-link category' id='" + item.id + "'>" + item.category + ' (' + item.num + ')' + '</a></li>')
       $li.appendTo('#categories');
     });
+    $('#categories').append("<li><a class='nav-link category' id=0>Uncategorized (" + json.uncategorized + ')' + '</a></li>')
   });
 };
 function my_bookmarks(category_id = -1) {
   if (category_id == -1) {
     url = '/bookmark/get';
     $('#edit_category').prop('hidden', true);
-    $('#add_bookmark').prop('href', function () {
-      return '/bookmark/add';
-    });
+    $('#add_bookmark').prop('href', '/bookmark/add');
+  } else if (category_id == 0) {
+    url = '/bookmark/get/0';
+    $('#edit_category').prop('hidden', true);
+    $('#add_bookmark').prop('href', '/bookmark/add');
   } else {
     url = '/bookmark/get/' + category_id;
     $('#edit_category').prop('hidden', false);
     $('#edit_category').prop('href', '/category/edit/' + category_id);
-    $('#add_bookmark').prop('href', function () {
-      return '/bookmark/add' + '?category_id=' + category_id;
-    });
+    $('#add_bookmark').prop('href', '/bookmark/add' + '?category_id=' + category_id);
   };
   bookmarks = $.getJSON(url, function (json) {
     document.title = json.category + ' - My Bookmarks';
