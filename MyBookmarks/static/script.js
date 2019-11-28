@@ -14,15 +14,15 @@ function my_categories() {
 function my_bookmarks(category_id = -1) {
   if (category_id == -1) {
     url = '/bookmark/get';
-    $('#edit_category').prop('hidden', true);
+    $('#edit_category').css('visibility', 'hidden');
     $('#add_bookmark').prop('href', '/bookmark/add');
   } else if (category_id == 0) {
     url = '/bookmark/get/0';
-    $('#edit_category').prop('hidden', true);
+    $('#edit_category').css('visibility', 'hidden');
     $('#add_bookmark').prop('href', '/bookmark/add');
   } else {
     url = '/bookmark/get/' + category_id;
-    $('#edit_category').prop('hidden', false);
+    $('#edit_category').css('visibility', '');
     $('#edit_category').prop('href', '/category/edit/' + category_id);
     $('#add_bookmark').prop('href', '/bookmark/add' + '?category_id=' + category_id);
   };
