@@ -13,30 +13,8 @@ function my_categories() {
 };
 function my_bookmarks(category_id = -1) {
   if (category_id == -1) {
-    url = '/bookmark/get';
-    $('#edit_category').css('visibility', 'hidden');
-    $('#add_bookmark').prop('href', '/bookmark/add');
-  } else if (category_id == 0) {
-    url = '/bookmark/get/0';
-    $('#edit_category').css('visibility', 'hidden');
-    $('#add_bookmark').prop('href', '/bookmark/add');
+    location.href = '/';
   } else {
-    url = '/bookmark/get/' + category_id;
-    $('#edit_category').css('visibility', '');
-    $('#edit_category').prop('href', '/category/edit/' + category_id);
-    $('#add_bookmark').prop('href', '/bookmark/add' + '?category_id=' + category_id);
+    location.href = '/?category=' + category_id;
   };
-  bookmarks = $.getJSON(url, function (json) {
-    document.title = json.category + ' - My Bookmarks';
-    $('#title').text(json.category);
-    $('#bookmarks').empty();
-    $.each(json.bookmarks, function (i, item) {
-      var $tr = $("<tr onclick='window.open(&quot;" + item.url + "&quot);'>").append(
-        $('<td>').text(item.bookmark),
-        $('<td>').text(item.url),
-        $('<td>').text(item.category)
-      );
-      $tr.appendTo('#bookmarks');
-    });
-  });
 };

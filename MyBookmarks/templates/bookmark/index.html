@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Category
+{{ category['name'] }} - My Bookmarks
 {% endblock %}
 
 {% block header %}
 <div>
-  <a class='h3' id='title'>Category</a>
-  <a class='btn btn-link' id='edit_category'>Edit</a>
+  <a class='h3'>{{ category['name'] }}</a>
+  <a class='btn btn-link' href="/category/edit/{{ category['id'] }}"{% if category['id'] <= 0 %} style='visibility:hidden'{% endif %}>Edit</a>
 </div>
-<a class='btn btn-primary' id='add_bookmark'>Add Bookmark</a>
+<a class='btn btn-primary' href="/bookmark/add{% if category['id']>0 %}?category_id={{ category['id'] }}{% endif %}">Add Bookmark</a>
 <p>
 {% endblock %}
 
@@ -23,12 +23,15 @@ Category
         <th scope='col'>Category</th> 
       </tr>
     </thead>
-    <tbody id='bookmarks'></tbody>
+    <tbody>
+      {% for bookmark in bookmarks %}
+      <tr onclick=window.open("{{ bookmark['url'] }}");>
+        <td>{{ bookmark['bookmark'] }}</td>
+        <td>{{ bookmark['url'] }}</td>
+        <td>{{ bookmark['category'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
 </div>
-<script>
-  $(function () {
-    my_bookmarks();
-  });
-</script>
 {% endblock %}

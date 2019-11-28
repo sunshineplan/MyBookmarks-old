@@ -12,8 +12,31 @@ bp = Blueprint('bookmark', __name__)
 @bp.route('/')
 @login_required
 def index():
-    '''Show all the bookmarks belong the current user.'''
-    return render_template('bookmark/index.html')
+    '''Show the bookmarks belong the current user.'''
+    category_id = request.args.get('category')
+    db = get_db()
+    if category_id is None:
+        category = {'id': -1, 'name': 'All Bookmarks'}
+        bookmarks = db.execute('SELECT bookmark, url, category FROM bookmark'
+                               ' LEFT JOIN category ON category_id = category.id'
+                               ' WHERE bookmark.user_id = ?',
+                               (g.user['id'],)).fetchall()
+        for i in bookmarks:
+            if not i['category']:
+                i['category'] = ''
+    elif category_id == '0':
+        category = {'id': 0, 'name': 'Uncategorized'}
+        bookmarks = db.execute('SELECT bookmark, url FROM bookmark WHERE category_id = 0 AND user_id = ?',
+                               (g.user['id'],)).fetchall()
+    else:
+        category = {'id': int(category_id)}
+        category['name'] = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
+                                      (category_id, g.user['id'])).fetchone()['category']
+        bookmarks = db.execute('SELECT bookmark, url FROM bookmark WHERE category_id = ? AND user_id = ?',
+                               (category_id, g.user['id'])).fetchall()
+        for i in bookmarks:
+            i['category'] = category['name']
+    return render_template('bookmark/index.html', category=category, bookmarks=bookmarks)
 
 
 @bp.route('/category/get', methods=('GET',))
@@ -85,32 +108,6 @@ def delete_category(id):
                (id, g.user['id']))
     db.commit()
     return redirect(url_for('index'))
-
-
-@bp.route('/bookmark/get', defaults={'category_id': -1})
-@bp.route('/bookmark/get/<int:category_id>', methods=('GET',))
-@login_required
-def get_bookmark(category_id):
-    '''Get current user's bookmark of specified category.'''
-    db = get_db()
-    if category_id == -1:
-        category = 'All Bookmarks'
-        bookmarks = db.execute('SELECT bookmark, url, category FROM bookmark'
-                               ' LEFT JOIN category ON category_id = category.id'
-                               ' WHERE bookmark.user_id = ?',
-                               (g.user['id'],)).fetchall()
-    elif category_id == 0:
-        category = 'Uncategorized'
-        bookmarks = db.execute('SELECT bookmark, url FROM bookmark WHERE category_id = 0 AND user_id = ?',
-                               (g.user['id'],)).fetchall()
-    else:
-        category = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
-                              (category_id, g.user['id'])).fetchone()['category']
-        bookmarks = db.execute('SELECT bookmark, url FROM bookmark WHERE category_id = ? AND user_id = ?',
-                               (category_id, g.user['id'])).fetchall()
-        for i in bookmarks:
-            i['category'] = category
-    return jsonify({'category': category, 'bookmarks': bookmarks})
 
 
 @bp.route('/bookmark/add', methods=('GET', 'POST'))
