@@ -76,6 +76,7 @@ def add_category():
 def edit_category(id):
     '''Edit a category for the current user.'''
     db = get_db()
+    last_visit = request.cookies.get('LastVisit')
     category = db.execute(
         'SELECT * FROM category WHERE id = ? AND user_id = ?', (id, g.user['id'])).fetchone()
     if request.method == 'POST':
@@ -93,7 +94,10 @@ def edit_category(id):
             db.execute(
                 'UPDATE category SET category = ? WHERE id = ? AND user_id = ?', (new, id, g.user['id']))
             db.commit()
-            return redirect(url_for('index'))
+            if last_visit:
+                return redirect(last_visit)
+            else:
+                return redirect(url_for('index'))
     return render_template('bookmark/category.html', id=id, category=category)
 
 
@@ -115,6 +119,7 @@ def delete_category(id):
 def add_bookmark():
     '''Create a new bookmark for the current user.'''
     category_id = request.args.get('category_id')
+    last_visit = request.cookies.get('LastVisit')
     db = get_db()
     if category_id:
         category = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
@@ -143,7 +148,10 @@ def add_bookmark():
             db.execute('INSERT INTO bookmark (bookmark, url, user_id, category_id)'
                        ' VALUES (?, ?, ?, ?)', (bookmark, url, g.user['id'], category_id))
             db.commit()
-            return redirect(url_for('index'))
+            if last_visit:
+                return redirect(last_visit)
+            else:
+                return redirect(url_for('index'))
     return render_template('bookmark/bookmark.html', id=0, bookmark={}, category=category)
 
 
@@ -152,6 +160,7 @@ def add_bookmark():
 def edit_bookmark(id):
     '''Edit a bookmark for the current user.'''
     db = get_db()
+    last_visit = request.cookies.get('LastVisit')
     bookmark = db.execute('SELECT bookmark, url, category FROM bookmark'
                           ' LEFT JOIN category ON category_id = category.id'
                           ' WHERE bookmark.id = ? AND bookmark.user_id = ?',
@@ -185,7 +194,10 @@ def edit_bookmark(id):
             db.execute('UPDATE bookmark SET bookmark = ?, url = ?, category_id = ?'
                        ' WHERE id = ? AND user_id = ?', (bookmark, url, category_id, id, g.user['id']))
             db.commit()
-            return redirect(url_for('index'))
+            if last_visit:
+                return redirect(last_visit)
+            else:
+                return redirect(url_for('index'))
     return render_template('bookmark/bookmark.html', id=id, bookmark=bookmark)
 
 
@@ -194,10 +206,14 @@ def edit_bookmark(id):
 def delete_bookmark(id):
     '''Edit a bookmark for the current user.'''
     db = get_db()
+    last_visit = request.cookies.get('LastVisit')
     db.execute('DELETE FROM bookmark WHERE id = ? and user_id = ?',
                (id, g.user['id']))
     db.commit()
-    return redirect(url_for('index'))
+    if last_visit:
+        return redirect(last_visit)
+    else:
+        return redirect(url_for('index'))
 
 
 @bp.route('/reorder', methods=('POST',))

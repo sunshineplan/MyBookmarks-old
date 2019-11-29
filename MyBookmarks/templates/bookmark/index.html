@@ -38,6 +38,8 @@
 </div>
 <script>
   $(function () {
+    console.log(window.location)
+    document.cookie = 'LastVisit=' + window.location.href + '; Path=/';
     $('#mybookmarks').sortable({
       update: function (event, ui) {
         var orig = ui.item.find('td')[0].textContent;
