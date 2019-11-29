@@ -1,14 +1,24 @@
 function my_categories() {
+  searchParams = new URLSearchParams(window.location.search);
+  category = searchParams.get('category');
   categories = $.getJSON('/category/get', function (json) {
     $('#category-list').empty();
     $('#categories').empty();
     $('#-1.category').text('All Bookmarks (' + json.total + ')');
     $.each(json.categories, function (i, item) {
       $('#category-list').append($('<option>').prop('value', item.category));
-      var $li = $("<li><a class='nav-link category' id='" + item.id + "'>" + item.category + ' (' + item.num + ')' + '</a></li>')
+      if (category == item.id) {
+        var $li = $("<li><a class='nav-link category active' id='" + item.id + "'>" + item.category + ' (' + item.num + ')' + '</a></li>');
+      } else {
+        var $li = $("<li><a class='nav-link category' id='" + item.id + "'>" + item.category + ' (' + item.num + ')' + '</a></li>');
+      };
       $li.appendTo('#categories');
     });
-    $('#categories').append("<li><a class='nav-link category' id=0>Uncategorized (" + json.uncategorized + ')' + '</a></li>')
+    if (category == 0) {
+      $('#categories').append("<li><a class='nav-link category active' id=0>Uncategorized (" + json.uncategorized + ')' + '</a></li>');
+    } else {
+      $('#categories').append("<li><a class='nav-link category' id=0>Uncategorized (" + json.uncategorized + ')' + '</a></li>');
+    };
   });
 };
 function my_bookmarks(category_id = -1) {
