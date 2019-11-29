@@ -29,8 +29,11 @@ def index():
                                ' ORDER BY seq', (g.user['id'],)).fetchall()
     else:
         category = {'id': int(category_id)}
-        category['name'] = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
-                                      (category_id, g.user['id'])).fetchone()['category']
+        try:
+            category['name'] = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
+                                        (category_id, g.user['id'])).fetchone()['category']
+        except TypeError:
+            abort(403)
         bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark'
                                ' WHERE category_id = ? AND user_id = ?'
                                ' ORDER BY seq', (category_id, g.user['id'])).fetchall()
@@ -79,6 +82,8 @@ def edit_category(id):
     last_visit = request.cookies.get('LastVisit')
     category = db.execute(
         'SELECT * FROM category WHERE id = ? AND user_id = ?', (id, g.user['id'])).fetchone()
+    if not category:
+        abort(403)
     if request.method == 'POST':
         old = category['category']
         new = request.form.get('category')
@@ -165,6 +170,8 @@ def edit_bookmark(id):
                           ' LEFT JOIN category ON category_id = category.id'
                           ' WHERE bookmark.id = ? AND bookmark.user_id = ?',
                           (id, g.user['id'])).fetchone()
+    if not bookmark:
+        abort(403)
     if request.method == 'POST':
         old = (bookmark['bookmark'], bookmark['url'], bookmark['category'])
         bookmark = request.form.get('bookmark')
