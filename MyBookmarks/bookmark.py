@@ -31,7 +31,7 @@ def index():
         category = {'id': int(category_id)}
         try:
             category['name'] = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
-                                        (category_id, g.user['id'])).fetchone()['category']
+                                          (category_id, g.user['id'])).fetchone()['category']
         except TypeError:
             abort(403)
         bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark'
@@ -119,6 +119,19 @@ def delete_category(id):
     return redirect(url_for('index'))
 
 
+def get_category_id(category, user_id):
+    if category:
+        db = get_db()
+        if category_id := db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, user_id)).fetchone():
+            return category_id['id']
+        else:
+            db.execute(
+                'INSERT INTO category (category, user_id) VALUES (?, ?)', (category, user_id))
+            return db.execute('SELECT last_insert_rowid() id').fetchone()['id']
+    else:
+        return 0
+
+
 @bp.route('/bookmark/add', methods=('GET', 'POST'))
 @login_required
 def add_bookmark():
@@ -140,16 +153,7 @@ def add_bookmark():
         elif db.execute('SELECT id FROM bookmark WHERE bookmark = ? AND user_id = ?', (bookmark, g.user['id'])).fetchone() is not None:
             flash(f'Bookmark name {bookmark} is already existed.')
         else:
-            if category:
-                if category_id := db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, g.user['id'])).fetchone():
-                    category_id = category_id['id']
-                else:
-                    db.execute(
-                        'INSERT INTO category (category, user_id) VALUES (?, ?)', (category, g.user['id']))
-                    category_id = db.execute(
-                        'SELECT last_insert_rowid() id').fetchone()['id']
-            else:
-                category_id = 0
+            category_id = get_category_id(category, g.user['id'])
             db.execute('INSERT INTO bookmark (bookmark, url, user_id, category_id)'
                        ' VALUES (?, ?, ?, ?)', (bookmark, url, g.user['id'], category_id))
             db.commit()
@@ -188,16 +192,7 @@ def edit_bookmark(id):
         if error:
             flash(error)
         else:
-            if category:
-                if category_id := db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, g.user['id'])).fetchone():
-                    category_id = category_id['id']
-                else:
-                    db.execute(
-                        'INSERT INTO category (category, user_id) VALUES (?, ?)', (category, g.user['id']))
-                    category_id = db.execute(
-                        'SELECT last_insert_rowid() id').fetchone()['id']
-            else:
-                category_id = 0
+            category_id = get_category_id(category, g.user['id'])
             db.execute('UPDATE bookmark SET bookmark = ?, url = ?, category_id = ?'
                        ' WHERE id = ? AND user_id = ?', (bookmark, url, category_id, id, g.user['id']))
             db.commit()
