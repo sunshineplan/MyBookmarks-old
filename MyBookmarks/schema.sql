@@ -47,4 +47,4 @@ INSERT INTO user (id, username)
   VALUES (0, 'guest');
 
 INSERT INTO bookmark (user_id, bookmark, url)
-  VALUES (0, 'Google', 'http://www.google.com');
+  VALUES (0, 'Google', 'https://www.google.com');
