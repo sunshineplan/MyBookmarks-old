@@ -1,4 +1,4 @@
-from flask import (Blueprint, abort, current_app, flash, g, jsonify, redirect,
+from flask import (Blueprint, abort, flash, g, jsonify, redirect,
                    render_template, request, url_for)
 
 from MyBookmarks.auth import login_required
