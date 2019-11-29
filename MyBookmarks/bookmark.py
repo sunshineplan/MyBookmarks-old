@@ -17,7 +17,7 @@ def index():
     db = get_db()
     if category_id is None:
         category = {'id': -1, 'name': 'All Bookmarks'}
-        bookmarks = db.execute('SELECT bookmark, url, category FROM bookmark'
+        bookmarks = db.execute('SELECT bookmark.id, bookmark, url, category FROM bookmark'
                                ' LEFT JOIN category ON category_id = category.id'
                                ' WHERE bookmark.user_id = ?',
                                (g.user['id'],)).fetchall()
@@ -26,13 +26,13 @@ def index():
                 i['category'] = ''
     elif category_id == '0':
         category = {'id': 0, 'name': 'Uncategorized'}
-        bookmarks = db.execute('SELECT bookmark, url FROM bookmark WHERE category_id = 0 AND user_id = ?',
+        bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark WHERE category_id = 0 AND user_id = ?',
                                (g.user['id'],)).fetchall()
     else:
         category = {'id': int(category_id)}
         category['name'] = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
                                       (category_id, g.user['id'])).fetchone()['category']
-        bookmarks = db.execute('SELECT bookmark, url FROM bookmark WHERE category_id = ? AND user_id = ?',
+        bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark WHERE category_id = ? AND user_id = ?',
                                (category_id, g.user['id'])).fetchall()
         for i in bookmarks:
             i['category'] = category['name']
@@ -126,7 +126,9 @@ def add_bookmark():
         bookmark = request.form.get('bookmark')
         url = request.form.get('url')
         if db.execute('SELECT id FROM bookmark WHERE url = ? AND user_id = ?', (url, g.user['id'])).fetchone() is not None:
-            flash(f'Bookmark {url} is already existed.')
+            flash(f'Bookmark url {url} is already existed.')
+        elif db.execute('SELECT id FROM bookmark WHERE bookmark = ? AND user_id = ?', (bookmark, g.user['id'])).fetchone() is not None:
+            flash(f'Bookmark name {bookmark} is already existed.')
         else:
             if category:
                 if category_id := db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, g.user['id'])).fetchone():
@@ -150,8 +152,10 @@ def add_bookmark():
 def edit_bookmark(id):
     '''Edit a bookmark for the current user.'''
     db = get_db()
-    bookmark = db.execute(
-        'SELECT * FROM bookmark WHERE id = ? AND user_id = ?', (id, g.user['id'])).fetchone()
+    bookmark = db.execute('SELECT bookmark, url, category FROM bookmark'
+                          ' LEFT JOIN category ON category_id = category.id'
+                          ' WHERE bookmark.id = ? AND bookmark.user_id = ?',
+                          (id, g.user['id'])).fetchone()
     if request.method == 'POST':
         old = (bookmark['bookmark'], bookmark['url'], bookmark['category'])
         bookmark = request.form.get('bookmark')
@@ -168,8 +172,18 @@ def edit_bookmark(id):
         if error:
             flash(error)
         else:
-            db.execute('UPDATE bookmark SET bookmark = ?, url = ?, category = ?'
-                       ' WHERE id = ? AND user_id = ?', (bookmark, url, category, id, g.user['id']))
+            if category:
+                if category_id := db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, g.user['id'])).fetchone():
+                    category_id = category_id['id']
+                else:
+                    db.execute(
+                        'INSERT INTO category (category, user_id) VALUES (?, ?)', (category, g.user['id']))
+                    category_id = db.execute(
+                        'SELECT last_insert_rowid() id').fetchone()['id']
+            else:
+                category_id = 0
+            db.execute('UPDATE bookmark SET bookmark = ?, url = ?, category_id = ?'
+                       ' WHERE id = ? AND user_id = ?', (bookmark, url, category_id, id, g.user['id']))
             db.commit()
             return redirect(url_for('index'))
     return render_template('bookmark/bookmark.html', id=id, bookmark=bookmark)

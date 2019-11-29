@@ -91,3 +91,7 @@ td {
 .form-row .form-group {
     padding-right: 30px;
 }
+
+.material-icons {
+    font-size: 18px;
+}

@@ -7,7 +7,7 @@
 {% block header %}
 <div>
   <a class='h3'>{{ category['name'] }}</a>
-  <a class='btn btn-link' href="/category/edit/{{ category['id'] }}"{% if category['id'] <= 0 %} style='visibility:hidden'{% endif %}>Edit</a>
+  <a class='btn btn-link' href="/category/edit/{{ category['id'] }}"{% if category['id'] <= 0 %} style='visibility:hidden'{% endif %}><i class='material-icons'>edit</i></a>
 </div>
 <a class='btn btn-primary' href="/bookmark/add{% if category['id']>0 %}?category_id={{ category['id'] }}{% endif %}">Add Bookmark</a>
 <p>
@@ -20,15 +20,17 @@
       <tr>
         <th scope='col'>Bookmark</th>
         <th scope='col'>URL</th>
-        <th scope='col'>Category</th> 
+        <th scope='col'>Category</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
       {% for bookmark in bookmarks %}
-      <tr onclick=window.open("{{ bookmark['url'] }}");>
+      <tr>
         <td>{{ bookmark['bookmark'] }}</td>
-        <td>{{ bookmark['url'] }}</td>
+        <td><a href="{{ bookmark['url'] }}" target='_blank'>{{ bookmark['url'] }}</a></td>
         <td>{{ bookmark['category'] }}</td>
+        <td><a href="/bookmark/edit/{{ bookmark['id'] }}"><i class='material-icons'>edit</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
