@@ -24,7 +24,7 @@
         <th></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id='mybookmarks'>
       {% for bookmark in bookmarks %}
       <tr>
         <td>{{ bookmark['bookmark'] }}</td>
@@ -36,4 +36,19 @@
     </tbody>
   </table>
 </div>
+<script>
+  $(function () {
+    $('#mybookmarks').sortable({
+      update: function (event, ui) {
+        var orig = ui.item.find('td')[0].textContent;
+        if (ui.item.prev().length != 0) {
+          var dest = ui.item.prev().find('td')[0].textContent;
+        } else {
+          dest = '#TOP_POSITION#';
+        };
+        $.post('/reorder', { orig: orig, dest: dest });
+      }
+    });
+  });
+</script>
 {% endblock %}

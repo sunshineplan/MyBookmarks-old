@@ -1,5 +1,3 @@
-from json import loads
-
 from flask import (Blueprint, abort, current_app, flash, g, jsonify, redirect,
                    render_template, request, url_for)
 
@@ -19,7 +17,7 @@ def index():
         category = {'id': -1, 'name': 'All Bookmarks'}
         bookmarks = db.execute('SELECT bookmark.id, bookmark, url, category FROM bookmark'
                                ' LEFT JOIN category ON category_id = category.id'
-                               ' WHERE bookmark.user_id = ?',
+                               ' WHERE bookmark.user_id = ? ORDER BY seq',
                                (g.user['id'],)).fetchall()
         for i in bookmarks:
             if not i['category']:
@@ -50,7 +48,7 @@ def get_category():
                                (g.user['id'],)).fetchone()['num']
     categories = db.execute('SELECT category.id, category, count(bookmark) num'
                             ' FROM category LEFT JOIN bookmark ON category.id = category_id'
-                            ' WHERE category.user_id = ? GROUP BY category_id', (g.user['id'],)).fetchall()
+                            ' WHERE category.user_id = ? GROUP BY category_id ORDER BY category', (g.user['id'],)).fetchall()
     return jsonify({'total': total, 'uncategorized': uncategorized, 'categories': categories})
 
 
@@ -202,14 +200,14 @@ def delete_bookmark(id):
 
 @bp.route('/reorder', methods=('POST',))
 def reorder():
-    orig = loads(request.form.get('orig'))
-    dest = loads(request.form.get('dest'))
+    orig = request.form.get('orig')
+    dest = request.form.get('dest')
     db = get_db()
     orig_seq = db.execute(
-        'SELECT seq FROM bookmark WHERE bookmark = ? AND url = ? AND user_id = ?', (orig[0], orig[1], g.user['id'])).fetchone()['seq']
-    if dest != 'top':
+        'SELECT seq FROM bookmark WHERE bookmark = ? AND user_id = ?', (orig, g.user['id'])).fetchone()['seq']
+    if dest != '#TOP_POSITION#':
         dest_seq = db.execute(
-            'SELECT seq FROM bookmark WHERE bookmark = ? AND url = ? AND user_id = ?', (dest[0], dest[1], g.user['id'])).fetchone()['seq']
+            'SELECT seq FROM bookmark WHERE bookmark = ? AND user_id = ?', (dest, g.user['id'])).fetchone()['seq']
     else:
         dest_seq = 0
     if orig_seq > dest_seq:
@@ -219,7 +217,7 @@ def reorder():
     else:
         db.execute('UPDATE bookmark SET seq = seq-1 WHERE seq <= ? AND user_id = ? AND seq > ?',
                    (dest_seq, g.user['id'], orig_seq))
-    db.execute('UPDATE bookmark SET seq = ? WHERE bookmark = ? AND url = ? AND user_id = ?',
-               (dest_seq, orig[0], orig[1], g.user['id']))
+    db.execute('UPDATE bookmark SET seq = ? WHERE bookmark = ? AND user_id = ?',
+               (dest_seq, orig, g.user['id']))
     db.commit()
     return '1'
