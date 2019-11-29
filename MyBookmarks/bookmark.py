@@ -53,7 +53,7 @@ def get_category():
                                (g.user['id'],)).fetchone()['num']
     categories = db.execute('SELECT category.id, category, count(bookmark) num'
                             ' FROM category LEFT JOIN bookmark ON category.id = category_id'
-                            ' WHERE category.user_id = ? GROUP BY category_id ORDER BY category', (g.user['id'],)).fetchall()
+                            ' WHERE category.user_id = ? GROUP BY category.id ORDER BY category', (g.user['id'],)).fetchall()
     return jsonify({'total': total, 'uncategorized': uncategorized, 'categories': categories})
 
 
