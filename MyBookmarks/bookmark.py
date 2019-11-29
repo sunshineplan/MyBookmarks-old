@@ -24,14 +24,16 @@ def index():
                 i['category'] = ''
     elif category_id == '0':
         category = {'id': 0, 'name': 'Uncategorized'}
-        bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark WHERE category_id = 0 AND user_id = ?',
-                               (g.user['id'],)).fetchall()
+        bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark'
+                               ' WHERE category_id = 0 AND user_id = ?'
+                               ' ORDER BY seq', (g.user['id'],)).fetchall()
     else:
         category = {'id': int(category_id)}
         category['name'] = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
                                       (category_id, g.user['id'])).fetchone()['category']
-        bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark WHERE category_id = ? AND user_id = ?',
-                               (category_id, g.user['id'])).fetchall()
+        bookmarks = db.execute('SELECT id, bookmark, url FROM bookmark'
+                               ' WHERE category_id = ? AND user_id = ?'
+                               ' ORDER BY seq', (category_id, g.user['id'])).fetchall()
         for i in bookmarks:
             i['category'] = category['name']
     return render_template('bookmark/index.html', category=category, bookmarks=bookmarks)
