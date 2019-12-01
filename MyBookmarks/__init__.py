@@ -10,6 +10,9 @@ def create_app():
     # store the database in the instance folder
     app.config['DATABASE'] = os.path.join(app.instance_path, 'mybookmarks.db')
     app.config['SECRET_KEY'] = os.urandom(16)
+    # load config from config.py
+    from MyBookmarks import config
+    app.config.from_object(config)
 
     # ensure the instance folder exists
     try:
