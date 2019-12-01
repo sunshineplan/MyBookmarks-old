@@ -36,17 +36,20 @@ def add(username):
 
 @cli.command(short_help='Backup Database')
 def backup():
-    mem = StringIO()
-    db = sqlite3.connect(app.config['DATABASE'])
-    mem.write('\n'.join(db.iterdump()))
-    db.close()
     try:
         msg = EmailMessage()
         msg['Subject'] = f'My Bookmarks Backup-{datetime.now():%Y%m%d}'
         msg['From'] = app.config['BACKUP_MAIL']
-        msg['To'] = app.config['BACKUP_MAIL']
+        msg['To'] = app.config['BACKUP_DEST']
+        mem = StringIO()
+        db = sqlite3.connect(app.config['DATABASE'])
+        mem.write('\n'.join(db.iterdump()))
+        db.close()
         msg.add_attachment(mem.getvalue(), filename='database')
-        with SMTP(app.config['BACKUP_SMTP']) as s:
+        mem.close()
+        with SMTP(app.config['BACKUP_SMTP'], app.config['BACKUP_SMTP_PORT']) as s:
+            s.starttls()
+            s.login(app.config['BACKUP_MAIL'], app.config['BACKUP_MAIL_AUTH'])
             s.send_message(msg)
     except:
         click.echo('Failed. Please check mail setting.')
