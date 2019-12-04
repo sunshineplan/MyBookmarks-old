@@ -28,7 +28,7 @@
   </div>
   <div class='form-group'>
     <label for='category'>Category</label>
-    <input class='form-control' list='category-list' name='category' id='category' maxlength=15 value="{{ bookmark['category'] or category}}">
+    <input class='form-control' list='category-list' name='category' id='category' maxlength=15 value="{{ request.form['category'] or bookmark['category'] }}">
     <datalist id='category-list'>
     </datalist>
     <small class='form-text text-muted'>Max length: 15 characters. One chinese character equal three characters.</small>
