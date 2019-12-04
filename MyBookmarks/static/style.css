@@ -34,12 +34,6 @@ body {
     border-radius: 5px;
 }
 
-.wrapper {
-    display: flex;
-    align-items: stretch;
-    min-height: 80vh;
-}
-
 .login {
     width: 250px;
     margin: 0 auto;
