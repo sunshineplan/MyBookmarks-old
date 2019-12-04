@@ -64,7 +64,9 @@ def add_category():
     if request.method == 'POST':
         db = get_db()
         category = request.form.get('category')
-        if db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, g.user['id'])).fetchone() is not None:
+        if len(category.encode('utf-8')) > 15:
+            flash(f'Category name exceeded length limit.')
+        elif db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, g.user['id'])).fetchone() is not None:
             flash(f'Category {category} is already existed.')
         else:
             db.execute(
@@ -90,6 +92,8 @@ def edit_category(id):
         error = None
         if old == new:
             error = 'New category is same as old category.'
+        elif len(category.encode('utf-8')) > 15:
+            flash(f'Category name exceeded length limit.')
         elif db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (new, g.user['id'])).fetchone() is not None:
             error = f'Category {new} is already existed.'
 

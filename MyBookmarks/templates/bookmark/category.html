@@ -9,7 +9,8 @@
 <form method='POST'>
   <div class='form-group'>
     <label for='category'>Category</label>
-    <input class='form-control' name='category' id='category' value="{{ request.form['category'] or category['category'] }}" required>
+    <input class='form-control' name='category' id='category' maxlength=15 value="{{ request.form['category'] or category['category'] }}" required>
+    <small class='form-text text-muted'>Max length: 15 characters. One chinese character equal three characters.</small>
   </div>
   <input type='submit' value='{% if id == 0 %}Add{% else %}Save{% endif %}' class='btn btn-primary'>
   <a class='btn btn-primary' href='javascript:history.go(-1);'>Cancel</a>
