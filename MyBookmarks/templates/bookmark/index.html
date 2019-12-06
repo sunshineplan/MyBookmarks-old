@@ -6,7 +6,6 @@
   <a class='btn btn-link' href="/category/edit/{{ category['id'] }}"{% if category['id'] <= 0 %} style='visibility:hidden'{% endif %}><i class='material-icons'>edit</i></a>
 </div>
 <a class='btn btn-primary' href="/bookmark/add{% if category['id']>0 %}?category_id={{ category['id'] }}{% endif %}">Add Bookmark</a>
-<p>
 {% endblock %}
 
 {% block content %}
