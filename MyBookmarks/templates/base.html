@@ -31,7 +31,7 @@
 </nav>
 {% endif %}
 <div class='content' {% if g.user %}style='padding-left: 250px;'{% endif %}>
-  <header {% if g.user %}style='padding-left: 12px;'{% endif %}>
+  <header {% if g.user %}style='padding-left: 20px;'{% endif %}>
   {% block header %}{% endblock %}
   </header>
   {% for message in get_flashed_messages() %}
