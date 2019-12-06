@@ -118,15 +118,6 @@ form {
     margin-right: 4px;
 }
 
-.form-row {
-    margin-right: 0px;
-    margin-left: 0px;
-}
-
-.form-row .form-group {
-    padding-right: 30px;
-}
-
 .material-icons {
     font-size: 18px;
 }
