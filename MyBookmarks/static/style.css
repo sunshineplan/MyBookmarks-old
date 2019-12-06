@@ -51,7 +51,6 @@ form.login {
     height: 100%;
     width: 250px;
     padding-top: 70px;
-    text-indent: 6px;
 }
 
 .category-menu {
@@ -61,6 +60,14 @@ form.login {
     overflow-x: hidden;
     overflow-y: auto;
     border-right: 1px solid #e9ecef;
+}
+
+.category-menu .btn {
+    margin-left: 6px;
+}
+
+.category-menu .navbar-brand {
+    text-indent: 6px;
 }
 
 .category-menu .navbar-nav {
@@ -114,10 +121,6 @@ form {
 
 .form-control {
     width: 250px;
-}
-
-.btn-primary {
-    margin-right: 4px;
 }
 
 .material-icons {
