@@ -168,7 +168,7 @@ def add_bookmark():
                 return redirect(last_visit)
             else:
                 return redirect(url_for('index'))
-    return render_template('bookmark/bookmark.html', id=0, bookmark={}, category=category)
+    return render_template('bookmark/bookmark.html', id=0, bookmark={'category': category})
 
 
 @bp.route('/bookmark/edit/<int:id>', methods=('GET', 'POST'))
@@ -183,6 +183,9 @@ def edit_bookmark(id):
                           (id, g.user['id'])).fetchone()
     if not bookmark:
         abort(403)
+    else:
+        if not bookmark['category']:
+            bookmark['category'] = ''
     if request.method == 'POST':
         old = (bookmark['bookmark'], bookmark['url'], bookmark['category'])
         bookmark = request.form.get('bookmark')
