@@ -37,10 +37,14 @@ body {
 
 .login {
     width: 250px;
+    margin: 0 auto 20px;
+}
+
+.d-inline-flex {
+    margin: 0 20px 20px;
 }
 
 form.login {
-    margin: 0 auto;
     padding: 0;
 }
 
