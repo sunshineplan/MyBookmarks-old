@@ -127,6 +127,10 @@ form {
     width: 250px;
 }
 
+.btn-danger {
+    margin-top: 8px;
+}
+
 .material-icons {
     font-size: 18px;
 }
