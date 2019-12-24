@@ -99,11 +99,11 @@ form.login {
 }
 
 header {
-    height: 12%;
+    height: 100px;
 }
 
 .table-responsive {
-    height: 88%;
+    height: calc(100% - 100px);
     padding: 0 10px;
 }
 
