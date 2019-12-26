@@ -4,12 +4,18 @@
 <link rel='icon' href="{{ url_for('static', filename='favicon.ico') }}">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src='https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'></script>
+<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js'></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
-<link rel='stylesheet' href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
 <nav class='navbar navbar-light topbar'>
-  <a class='brand' href="{{ url_for('index') }}">My Bookmarks</a>
+  <div class='d-flex'>
+    <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='.category-menu'>
+      <span class='navbar-toggler-icon'></span>
+    </button>
+    <a class='brand' href="{{ url_for('index') }}">My Bookmarks</a>
+  </div>
   <div class='navbar-nav flex-row'>
     {% if g.user %}
     <a class='nav-link'>{{ g.user['username'] }}</a>
@@ -22,7 +28,7 @@
 </nav>
 {% if g.user %}
 <nav class='nav flex-column navbar-light sidebar'>
-  <div class='category-menu'>
+  <div class='category-menu collapse'>
     <a class='btn btn-primary btn-sm' href="{{ url_for('bookmark.add_category') }}">Add Category</a>
     <a class='navbar-brand category' id='-1'>All Bookmarks</a>
     <ul class='navbar-nav' id='categories'></ul>

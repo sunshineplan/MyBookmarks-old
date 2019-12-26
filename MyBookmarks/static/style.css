@@ -64,6 +64,8 @@ form.login {
     overflow-x: hidden;
     overflow-y: auto;
     border-right: 1px solid #e9ecef;
+    flex-basis: 100%;
+    background-color: white;
 }
 
 .category-menu .btn {
@@ -139,4 +141,20 @@ form {
 
 .material-icons {
     font-size: 18px;
+}
+
+@media (min-width: 901px) {
+    .category-menu {
+        display: block !important;
+    }
+
+    .navbar-toggler {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .content {
+        padding-left: 0 !important;
+    }
 }
