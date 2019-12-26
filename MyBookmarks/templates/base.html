@@ -11,9 +11,11 @@
 <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
 <nav class='navbar navbar-light topbar'>
   <div class='d-flex'>
+    {% if g.user %}
     <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='.category-menu'>
       <span class='navbar-toggler-icon'></span>
     </button>
+    {% endif %}
     <a class='brand' href="{{ url_for('index') }}">My Bookmarks</a>
   </div>
   <div class='navbar-nav flex-row'>
