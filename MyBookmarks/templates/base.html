@@ -12,8 +12,8 @@
 <nav class='navbar navbar-light topbar'>
   <div class='d-flex'>
     {% if g.user %}
-    <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='.category-menu'>
       <span class='navbar-toggler-icon'></span>
+    <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='.sidebar'>
     </button>
     {% endif %}
     <a class='brand' href="{{ url_for('index') }}">My Bookmarks</a>
@@ -29,8 +29,8 @@
   </div>
 </nav>
 {% if g.user %}
-<nav class='nav flex-column navbar-light sidebar'>
-  <div class='category-menu collapse'>
+<nav class='nav flex-column navbar-light sidebar collapse'>
+  <div class='category-menu'>
     <a class='btn btn-primary btn-sm' href="{{ url_for('bookmark.add_category') }}">Add Category</a>
     <a class='navbar-brand category' id='-1'>All Bookmarks</a>
     <ul class='navbar-nav' id='categories'></ul>

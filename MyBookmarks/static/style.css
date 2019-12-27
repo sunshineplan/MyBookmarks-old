@@ -154,7 +154,7 @@ form {
 }
 
 @media (min-width: 901px) {
-    .category-menu {
+    .sidebar {
         display: block !important;
     }
 
