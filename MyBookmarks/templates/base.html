@@ -4,17 +4,14 @@
 <link rel='icon' href="{{ url_for('static', filename='favicon.ico') }}">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src='https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'></script>
-<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js'></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
 <nav class='navbar navbar-light topbar'>
-  <div class='d-flex'>
+  <div class='d-flex' style='height: 100%;'>
     {% if g.user %}
-      <span class='navbar-toggler-icon'></span>
-    <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='.sidebar'>
-    </button>
+    <a class='toggle'><i class='material-icons menu'>menu</i></a>
     {% endif %}
     <a class='brand' href="{{ url_for('index') }}">My Bookmarks</a>
   </div>
@@ -29,7 +26,7 @@
   </div>
 </nav>
 {% if g.user %}
-<nav class='nav flex-column navbar-light sidebar collapse'>
+<nav class='nav flex-column navbar-light sidebar'>
   <div class='category-menu'>
     <a class='btn btn-primary btn-sm' href="{{ url_for('bookmark.add_category') }}">Add Category</a>
     <a class='navbar-brand category' id='-1'>All Bookmarks</a>
@@ -53,5 +50,11 @@
   });
   $(document).on('click', '.category', function () {
     my_bookmarks($(this).prop('id'));
+  });
+  $('.toggle').click(function() {
+    $('.sidebar').toggle('slide');
+  });
+  $('.content').click(function() {
+    $('.sidebar').hide();
   });
 </script>
