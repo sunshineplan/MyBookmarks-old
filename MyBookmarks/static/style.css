@@ -112,6 +112,10 @@ form.login {
     color: #1a73e8 !important;
 }
 
+.nav-link.active {
+    background-color: #eaf5fd;
+}
+
 .content {
     position: fixed;
     top: 0;
