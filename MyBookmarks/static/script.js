@@ -14,6 +14,9 @@ function my_categories() {
       };
       $li.appendTo('#categories');
     });
+    if (category == null) {
+      $('#-1.category').addClass('active')
+    };
     if (category == 0) {
       $('#categories').append("<li><a class='nav-link category active' id=0>Uncategorized (" + json.uncategorized + ')' + '</a></li>');
     } else {
