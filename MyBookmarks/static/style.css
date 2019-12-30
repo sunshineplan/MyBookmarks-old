@@ -74,7 +74,6 @@ form.login {
     width: 100%;
     padding-top: 10px;
     overflow-x: hidden;
-    overflow-y: auto;
     border-right: 1px solid #e9ecef;
     background-color: white;
 }
@@ -94,6 +93,11 @@ form.login {
 .category-menu .nav-link:hover {
     background-color: rgb(232, 232, 232);
 }
+
+#categories {
+    height: calc(100% - 71px);
+    overflow-y: auto;
+} 
 
 .category {
     display: block;
