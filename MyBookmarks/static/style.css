@@ -11,6 +11,7 @@ body {
     height: 70px;
     padding: 0 10px 0 0;
     background-color: #1a73e8;
+    user-select: none;
 }
 
 .toggle {
@@ -67,6 +68,7 @@ form.login {
     height: 100%;
     width: 250px;
     padding-top: 70px;
+    user-select: none;
 }
 
 .category-menu {
