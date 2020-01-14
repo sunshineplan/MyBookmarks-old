@@ -81,7 +81,8 @@ form.login {
 }
 
 .category-menu .btn {
-    margin-left: 6px;
+    margin-left: 20px;
+    margin-bottom: 5px;
 }
 
 .category-menu .navbar-brand {
@@ -97,7 +98,7 @@ form.login {
 }
 
 #categories {
-    height: calc(100% - 71px);
+    height: calc(100% - 76px);
     overflow-y: auto;
 } 
 
