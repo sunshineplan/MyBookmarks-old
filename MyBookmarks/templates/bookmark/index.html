@@ -23,7 +23,7 @@
       {% for bookmark in bookmarks %}
       <tr>
         <td>{{ bookmark['bookmark'] }}</td>
-        <td><a href="{{ bookmark['url'] }}" target='_blank'>{{ bookmark['url'] }}</a></td>
+        <td><a href="{{ bookmark['url'] }}" target='_blank' class='url'>{{ bookmark['url'] }}</a></td>
         <td>{{ bookmark['category'] }}</td>
         <td><a href="/bookmark/edit/{{ bookmark['id'] }}"><i class='material-icons edit'>edit</i></a></td>
       </tr>
@@ -45,6 +45,9 @@
         $.post('/reorder', { orig: orig, dest: dest });
       }
     });
+    isMobile = window.matchMedia('(max-width: 700px)');
+    isMobile.onchange = simplify_url;
+    simplify_url();
   });
 </script>
 {% endblock %}

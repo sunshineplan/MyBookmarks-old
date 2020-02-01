@@ -31,3 +31,14 @@ function my_bookmarks(category_id = -1) {
     location.href = '/?category=' + category_id;
   };
 };
+function simplify_url() {
+  if (isMobile.matches) {
+    $('.url').each(function() {
+      $(this).text($(this).text().replace(/https?:\/\/(www\.)?/i, ''));
+    });
+  } else {
+    $('.url').each(function() {
+      $(this).text($(this).attr('href'));
+    });
+  };
+};
