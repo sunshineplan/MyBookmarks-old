@@ -25,12 +25,30 @@ def cli(ctx):
 def add(username):
     db = sqlite3.connect(app.config['DATABASE'])
     try:
-        db.executescript(f"INSERT INTO user(username) VALUES ('{username}');")
+        db.executescript(
+            f"INSERT INTO user(username) VALUES ('{username.lower()}');")
         click.echo('Done.')
     except sqlite3.IntegrityError:
-        click.echo(f'[ERROR]Username {username} already exists.')
-    except sqlite3.OperationalError:
+        click.echo(f'[ERROR]Username {username.lower()} already exists.')
+    except:
         click.echo('Critical Error! Please contact your system administrator.')
+    db.close()
+
+
+@cli.command(short_help='Delete User')
+@click.argument('username')
+def delete(username):
+    db = sqlite3.connect(app.config['DATABASE'])
+    try:
+        cursor = db.execute(
+            f"DELETE FROM user WHERE username='{username.lower()}';")
+        if cursor.rowcount:
+            click.echo('Done.')
+        else:
+            click.echo(f'[ERROR]User {username.lower()} does not exist.')
+    except:
+        click.echo('Critical Error! Please contact your system administrator.')
+    db.commit()
     db.close()
 
 
