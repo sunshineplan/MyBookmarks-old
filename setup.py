@@ -9,7 +9,6 @@ with io.open('README.rst', 'rt', encoding='utf8') as f:
 setup(
     name='MyBookmarks',
     version='0.0.1',
-    url='https://mb.shlib.cf',
     license='BSD',
     maintainer='Sunshine',
     maintainer_email='sunshineplan@gmail.com',
