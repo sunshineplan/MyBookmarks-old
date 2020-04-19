@@ -126,9 +126,10 @@ def delete_category(id):
 def get_category_id(category, user_id):
     if category:
         db = get_db()
+        category_id = db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, user_id)).fetchone()
         if len(category.encode('utf-8')) > 15:
             return None
-        elif category_id := db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, user_id)).fetchone():
+        elif category_id:
             return category_id['id']
         else:
             db.execute(
@@ -154,11 +155,12 @@ def add_bookmark():
         category = request.form.get('category')
         bookmark = request.form.get('bookmark')
         url = request.form.get('url')
+        category_id = get_category_id(category, g.user['id'])
         if db.execute('SELECT id FROM bookmark WHERE url = ? AND user_id = ?', (url, g.user['id'])).fetchone() is not None:
             flash(f'Bookmark url {url} is already existed.')
         elif db.execute('SELECT id FROM bookmark WHERE bookmark = ? AND user_id = ?', (bookmark, g.user['id'])).fetchone() is not None:
             flash(f'Bookmark name {bookmark} is already existed.')
-        elif (category_id := get_category_id(category, g.user['id'])) is None:
+        elif category_id is None:
             flash('Category name exceeded length limit.')
         else:
             db.execute('INSERT INTO bookmark (bookmark, url, user_id, category_id)'
@@ -191,6 +193,7 @@ def edit_bookmark(id):
         bookmark = request.form.get('bookmark')
         url = request.form.get('url')
         category = request.form.get('category')
+        category_id = get_category_id(category, g.user['id'])
         error = None
         if old == (bookmark, url, category):
             error = 'New bookmark is same as old bookmark.'
@@ -198,7 +201,7 @@ def edit_bookmark(id):
             error = f'Bookmark name {bookmark} is already existed.'
         elif db.execute('SELECT id FROM bookmark WHERE url = ? AND id != ? AND user_id = ?', (url, id, g.user['id'])).fetchone() is not None:
             error = f'Bookmark url {url} is already existed.'
-        elif (category_id := get_category_id(category, g.user['id'])) is None:
+        elif category_id is None:
             error = 'Category name exceeded length limit.'
 
         if error:
