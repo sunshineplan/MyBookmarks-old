@@ -12,6 +12,14 @@ from MyBookmarks import create_app
 
 app = create_app()
 
+BACKUP = {
+    'sender': 'SENDER',
+    'smtp_server': 'SMTP_SERVER',
+    'smtp_server_port': 587,
+    'password': 'PWD',
+    'subscriber': 'SUBSCRIBER'
+}
+
 
 @click.group(invoke_without_command=True)
 @click.pass_context
@@ -55,19 +63,24 @@ def delete(username):
 @cli.command(short_help='Backup Database')
 def backup():
     try:
+        from metadata import metadata
+        BACKUP = metadata('mybookmarks_backup', ERROR_IF_NONE=True)
+    except:
+        pass
+    try:
         msg = EmailMessage()
         msg['Subject'] = f'My Bookmarks Backup-{datetime.now():%Y%m%d}'
-        msg['From'] = app.config['BACKUP_MAIL']
-        msg['To'] = app.config['BACKUP_DEST']
+        msg['From'] = BACKUP['sender']
+        msg['To'] = BACKUP['subscriber']
         mem = StringIO()
         db = sqlite3.connect(app.config['DATABASE'])
         mem.write('\n'.join(db.iterdump()))
         db.close()
         msg.add_attachment(mem.getvalue(), filename='database')
         mem.close()
-        with SMTP(app.config['BACKUP_SMTP'], app.config['BACKUP_SMTP_PORT']) as s:
+        with SMTP(BACKUP['smtp_server'], BACKUP['smtp_server_port']) as s:
             s.starttls()
-            s.login(app.config['BACKUP_MAIL'], app.config['BACKUP_MAIL_AUTH'])
+            s.login(BACKUP['sender'], BACKUP['password'])
             s.send_message(msg)
     except:
         click.echo('Failed. Please check mail setting.')
