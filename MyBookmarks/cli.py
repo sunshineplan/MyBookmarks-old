@@ -84,19 +84,20 @@ def backup():
             s.starttls()
             s.login(BACKUP['sender'], BACKUP['password'])
             s.send_message(msg)
+        click.echo('Done.')
     except:
         click.echo('Failed. Please check mail setting.')
 
 
 @cli.command(short_help='Restore Database')
-@click.argument('file')
-def restore(file='database'):
+@click.argument('file', default='database', type=click.File())
+def restore(file):
     db = sqlite3.connect(app.config['DATABASE'])
-    with open(file) as f:
-        with app.open_resource('drop_all.sql', 'rt') as df:
-            db.executescript(df.read())
-        db.executescript(f.read())
+    with app.open_resource('drop_all.sql') as f:
+        db.executescript(f.read().decode())
+    db.executescript(file.read())
     db.close()
+    click.echo('Done.')
 
 
 @cli.command(short_help='Run Server')
