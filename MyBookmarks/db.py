@@ -38,6 +38,8 @@ def close_db(e=None):
 def init_db(app=current_app):
     '''Clear existing data and create new tables and views.'''
     db = get_db()
+    with app.open_resource('drop_all.sql') as f:
+        db.executescript(f.read().decode('utf8'))
     with app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
 

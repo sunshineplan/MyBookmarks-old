@@ -10,15 +10,22 @@ import click
 
 from MyBookmarks import create_app
 
+try:
+    from metadata import metadata
+except:
+    def metadata(_, value): return value
+
 app = create_app()
 
-BACKUP = {
+_BACKUP = {
     'sender': 'SENDER',
     'smtp_server': 'SMTP_SERVER',
     'smtp_server_port': 587,
     'password': 'PWD',
     'subscriber': 'SUBSCRIBER'
 }
+
+BACKUP = metadata('mybookmarks_backup', _BACKUP)
 
 
 @click.group(invoke_without_command=True)
@@ -63,11 +70,6 @@ def delete(username):
 @cli.command(short_help='Backup Database')
 def backup():
     try:
-        from metadata import metadata
-        BACKUP = metadata('mybookmarks_backup', ERROR_IF_NONE=True)
-    except:
-        pass
-    try:
         msg = EmailMessage()
         msg['Subject'] = f'My Bookmarks Backup-{datetime.now():%Y%m%d}'
         msg['From'] = BACKUP['sender']
@@ -86,15 +88,27 @@ def backup():
         click.echo('Failed. Please check mail setting.')
 
 
+@cli.command(short_help='Restore Database')
+@click.argument('file')
+def restore(file='database'):
+    db = sqlite3.connect(app.config['DATABASE'])
+    with open(file) as f:
+        with app.open_resource('drop_all.sql', 'rt') as df:
+            db.executescript(df.read())
+        db.executescript(f.read())
+    db.close()
+
+
 @cli.command(short_help='Run Server')
 @click.option('--port', '-p', default=80, help='Listening Port')
 @click.option('--debug', is_flag=True, hidden=True)
 def run(port, debug):
-    if debug:
-        app.run(host='0.0.0.0', port=port, debug=debug)
-    else:
-        app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=debug)
+
+
+def main():
+    cli()
 
 
 if __name__ == '__main__':
-    cli()
+    main()

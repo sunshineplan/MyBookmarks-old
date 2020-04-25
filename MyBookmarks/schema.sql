@@ -1,11 +1,4 @@
 -- Initialize the database.
--- Drop any existing data and create empty tables.
-
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS category;
-DROP TABLE IF EXISTS bookmark;
-DROP TRIGGER IF EXISTS add_seq;
-DROP TRIGGER IF EXISTS reorder;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -1,0 +1,10 @@
+	[Unit]
+	Description=uWSGI instance to serve My Bookmarks
+	After=network.target
+
+	[Service]
+	ExecStart=/usr/bin/uwsgi --ini /var/www/bookmark/MyBookmarks.ini
+	WorkingDirectory=/var/www/bookmark
+
+	[Install]
+	WantedBy=multi-user.target
