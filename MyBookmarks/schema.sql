@@ -24,6 +24,14 @@ CREATE TABLE bookmark (
   FOREIGN KEY (user_id) REFERENCES user (id)
 );
 
+CREATE TRIGGER add_user AFTER INSERT ON user
+BEGIN
+    INSERT INTO bookmark
+      (user_id, bookmark, url)
+    VALUES
+      (new.id, 'Google', 'https://www.google.com');
+END;
+
 CREATE TRIGGER add_seq AFTER INSERT ON bookmark
 BEGIN
     UPDATE bookmark SET seq = (SELECT MAX(seq)+1 FROM bookmark WHERE user_id = new.user_id)
@@ -38,6 +46,3 @@ END;
 
 INSERT INTO user (id, username)
   VALUES (0, 'guest');
-
-INSERT INTO bookmark (user_id, bookmark, url)
-  VALUES (0, 'Google', 'https://www.google.com');
