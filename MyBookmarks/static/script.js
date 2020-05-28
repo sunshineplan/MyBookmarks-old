@@ -70,6 +70,64 @@ function setting() {
     document.title = 'Setting - My Bookmarks';
   });
 };
+function doCategory(id) {
+  var url;
+  if (id == 0) {
+    url = '/category/add';
+  } else {
+    url = '/category/edit/' + id;
+  }
+  $.post(url, $('#form').serialize(), function (json) {
+    if (json.status == 1) {
+      my_categories();
+      goback();
+    } else {
+      alert(json.message);
+      if (json.error == 1) {
+        $('#category').val('');
+      };
+    };
+  });
+};
+function doBookmark(id) {
+  var url;
+  if (id == 0) {
+    url = '/bookmark/add';
+  } else {
+    url = '/bookmark/edit/' + id;
+  }
+  $.post(url, $('#form').serialize(), function (json) {
+    if (json.status == 1) {
+      my_categories();
+      goback();
+    } else {
+      alert(json.message);
+      if (json.error == 1) {
+        $('#bookmark').val('');
+      } else if (json.error == 2) {
+        $('#url').val('');
+      } else if (json.error == 3) {
+        $('#category').val('');
+      };
+    };
+  });
+};
+function doSetting() {
+  $.post('/auth/setting', $('form').serialize(), function (json) {
+    if (json.status == 1) {
+      alert('Password Changed. Please Re-login!');
+      window.location = '/auth/login';
+    } else {
+      alert(json.message);
+      if (json.error == 1) {
+        $('#password').val('');
+      } else if (json.error == 2) {
+        $('#password1').val('');
+        $('#password2').val('');
+      };
+    };
+  });
+};
 function simplify_url() {
   if (isMobile.matches) {
     $('.url').each(function () {

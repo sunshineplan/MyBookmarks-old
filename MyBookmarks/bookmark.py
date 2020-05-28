@@ -1,5 +1,5 @@
-from flask import (Blueprint, abort, flash, g, jsonify, redirect,
-                   render_template, request, url_for)
+from flask import (Blueprint, abort, g, jsonify, redirect, render_template,
+                   request, url_for)
 
 from MyBookmarks.auth import login_required
 from MyBookmarks.db import get_db
@@ -71,14 +71,15 @@ def add_category():
         db = get_db()
         category = request.form.get('category')
         if len(category.encode('utf-8')) > 15:
-            flash('Category name exceeded length limit.')
+            message = 'Category name exceeded length limit.'
         elif db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, g.user['id'])).fetchone() is not None:
-            flash(f'Category {category} is already existed.')
+            message = f'Category {category} is already existed.'
         else:
             db.execute(
                 'INSERT INTO category (category, user_id) VALUES (?, ?)', (category, g.user['id']))
             db.commit()
-        return redirect(url_for('index'))
+            return jsonify({'status': 1})
+        return jsonify({'status': 0, 'message': message, 'error': 1})
     return render_template('bookmark/category.html', id=0, category={})
 
 
@@ -87,7 +88,6 @@ def add_category():
 def edit_category(id):
     '''Edit a category for the current user.'''
     db = get_db()
-    last_visit = request.cookies.get('LastVisit')
     category = db.execute(
         'SELECT * FROM category WHERE id = ? AND user_id = ?', (id, g.user['id'])).fetchone()
     if not category:
@@ -95,24 +95,21 @@ def edit_category(id):
     if request.method == 'POST':
         old = category['category']
         new = request.form.get('category')
-        error = None
+        error = 0
         if old == new:
-            error = 'New category is same as old category.'
+            message = 'New category is same as old category.'
         elif len(new.encode('utf-8')) > 15:
-            error = 'Category name exceeded length limit.'
+            message = 'Category name exceeded length limit.'
+            error = 1
         elif db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (new, g.user['id'])).fetchone() is not None:
-            error = f'Category {new} is already existed.'
-
-        if error:
-            flash(error)
+            message = f'Category {new} is already existed.'
+            error = 1
         else:
             db.execute(
                 'UPDATE category SET category = ? WHERE id = ? AND user_id = ?', (new, id, g.user['id']))
             db.commit()
-        if last_visit:
-            return redirect(last_visit)
-        else:
-            return redirect(url_for('index'))
+            return jsonify({'status': 1})
+        return jsonify({'status': 0, 'message': message, 'error': error})
     return render_template('bookmark/category.html', id=id, category=category)
 
 
@@ -151,7 +148,6 @@ def get_category_id(category, user_id):
 def add_bookmark():
     '''Create a new bookmark for the current user.'''
     category_id = request.args.get('category_id')
-    last_visit = request.cookies.get('LastVisit')
     db = get_db()
     if category_id:
         category = db.execute('SELECT category FROM category WHERE id = ? AND user_id = ?',
@@ -163,20 +159,22 @@ def add_bookmark():
         bookmark = request.form.get('bookmark')
         url = request.form.get('url')
         category_id = get_category_id(category, g.user['id'])
-        if db.execute('SELECT id FROM bookmark WHERE url = ? AND user_id = ?', (url, g.user['id'])).fetchone() is not None:
-            flash(f'Bookmark url {url} is already existed.')
-        elif db.execute('SELECT id FROM bookmark WHERE bookmark = ? AND user_id = ?', (bookmark, g.user['id'])).fetchone() is not None:
-            flash(f'Bookmark name {bookmark} is already existed.')
+        error = 0
+        if db.execute('SELECT id FROM bookmark WHERE bookmark = ? AND user_id = ?', (bookmark, g.user['id'])).fetchone() is not None:
+            message = f'Bookmark name {bookmark} is already existed.'
+            error = 1
+        elif db.execute('SELECT id FROM bookmark WHERE url = ? AND user_id = ?', (url, g.user['id'])).fetchone() is not None:
+            message = f'Bookmark url {url} is already existed.'
+            error = 2
         elif category_id is None:
-            flash('Category name exceeded length limit.')
+            message = 'Category name exceeded length limit.'
+            error = 3
         else:
             db.execute('INSERT INTO bookmark (bookmark, url, user_id, category_id)'
                        ' VALUES (?, ?, ?, ?)', (bookmark, url, g.user['id'], category_id))
             db.commit()
-        if last_visit:
-            return redirect(last_visit)
-        else:
-            return redirect(url_for('index'))
+            return jsonify({'status': 1})
+        return jsonify({'status': 0, 'message': message, 'error': error})
     return render_template('bookmark/bookmark.html', id=0, bookmark={'category': category})
 
 
@@ -185,7 +183,6 @@ def add_bookmark():
 def edit_bookmark(id):
     '''Edit a bookmark for the current user.'''
     db = get_db()
-    last_visit = request.cookies.get('LastVisit')
     bookmark = db.execute('SELECT bookmark, url, category FROM bookmark'
                           ' LEFT JOIN category ON category_id = category.id'
                           ' WHERE bookmark.id = ? AND bookmark.user_id = ?',
@@ -201,26 +198,24 @@ def edit_bookmark(id):
         url = request.form.get('url')
         category = request.form.get('category')
         category_id = get_category_id(category, g.user['id'])
-        error = None
+        error = 0
         if old == (bookmark, url, category):
-            error = 'New bookmark is same as old bookmark.'
+            message = 'New bookmark is same as old bookmark.'
         elif db.execute('SELECT id FROM bookmark WHERE bookmark = ? AND id != ? AND user_id = ?', (bookmark, id, g.user['id'])).fetchone() is not None:
-            error = f'Bookmark name {bookmark} is already existed.'
+            message = f'Bookmark name {bookmark} is already existed.'
+            error = 1
         elif db.execute('SELECT id FROM bookmark WHERE url = ? AND id != ? AND user_id = ?', (url, id, g.user['id'])).fetchone() is not None:
-            error = f'Bookmark url {url} is already existed.'
+            message = f'Bookmark url {url} is already existed.'
+            error = 2
         elif category_id is None:
-            error = 'Category name exceeded length limit.'
-
-        if error:
-            flash(error)
+            message = 'Category name exceeded length limit.'
+            error = 3
         else:
             db.execute('UPDATE bookmark SET bookmark = ?, url = ?, category_id = ?'
                        ' WHERE id = ? AND user_id = ?', (bookmark, url, category_id, id, g.user['id']))
             db.commit()
-        if last_visit:
-            return redirect(last_visit)
-        else:
-            return redirect(url_for('index'))
+            return jsonify({'status': 1})
+        return jsonify({'status': 0, 'message': message, 'error': error})
     return render_template('bookmark/bookmark.html', id=id, bookmark=bookmark)
 
 

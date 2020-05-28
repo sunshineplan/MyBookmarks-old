@@ -2,7 +2,7 @@
   <h3>Setting</h3>
   <hr>
 </header>
-<form method='post' action='/auth/setting'>
+<form onsubmit='return false'>
   <div class='form-group'>
     <label for='password'>Current Password</label>
     <input autofocus class='form-control' type='password' name='password' id='password'>
@@ -15,6 +15,6 @@
     <label for='password2'>Confirm Password</label>
     <input class='form-control' type='password' name='password2' id='password2'>
   </div>
-  <input type='submit' value='Change' class='btn btn-primary'>
-  <input type='button' value='Cancel' class='btn btn-primary' onclick='goback()'>
+  <button class='btn btn-primary' onclick='doSetting()'>Change</button>
+  <button class='btn btn-primary' onclick='goback()'>Cancel</button>
 </form>

@@ -1,7 +1,7 @@
 import functools
 
-from flask import (Blueprint, flash, g, redirect, render_template, request,
-                   session, url_for)
+from flask import (Blueprint, flash, g, jsonify, redirect, render_template,
+                   request, session, url_for)
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from MyBookmarks.db import get_db, init_db
@@ -84,20 +84,24 @@ def setting():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         db = get_db()
-        error = None
+        error = 0
+        message = None
         user = db.execute('SELECT password FROM user WHERE id = ?',
                           (g.user['id'],)).fetchone()
 
         if not check_password_hash(user['password'], password) and user['password'] != password:
-            error = 'Incorrect password.'
+            message = 'Incorrect password.'
+            error = 1
         elif password1 != password2:
-            error = "Confirm password doesn't match new password."
+            message = "Confirm password doesn't match new password."
+            error = 2
         elif password1 == password:
-            error = 'New password cannot be the same as your current password.'
+            message = 'New password cannot be the same as your current password.'
+            error = 2
         elif password1 is None or password1 == '':
-            error = 'New password cannot be blank.'
+            message = 'New password cannot be blank.'
 
-        if error is None:
+        if not message:
             # Store new password in the database and go to
             # the login page
             db.execute(
@@ -106,10 +110,9 @@ def setting():
             )
             db.commit()
             session.clear()
-            flash('Password Changed. Please Re-login!')
-            return redirect(url_for('auth.login'))
+            return jsonify({'status': 1})
 
-        flash(error)
+        return jsonify({'status': 0, 'message': message, 'error': error})
 
     return render_template('auth/setting.html')
 

@@ -2,14 +2,14 @@
   <h3>{% if id == 0 %}Add{% else %}Edit{% endif %} Category</h3>
   <hr>
 </header>
-<form method='POST' action='/category/{% if id == 0 %}add{% else %}edit/{{ id }}{% endif %}'>
+<form id='form' onsubmit='return false'>
   <div class='form-group'>
     <label for='category'>Category</label>
     <input class='form-control' name='category' id='category' maxlength=15 value="{{ request.form['category'] or category['category'] }}" required>
     <small class='form-text text-muted'>Max length: 15 characters. One chinese character equal three characters.</small>
   </div>
-  <input type='submit' value='{% if id == 0 %}Add{% else %}Save{% endif %}' class='btn btn-primary'>
-  <input type='button' value='Cancel' class='btn btn-primary' onclick='goback()'>
+  <button class='btn btn-primary' onclick='doCategory({{ id }})'>{% if id == 0 %}Add{% else %}Save{% endif %}</button>
+  <button class='btn btn-primary' onclick='goback()'>Cancel</button>
 </form>
 {% if id != 0 %}
 <form action="{{ url_for('bookmark.delete_category', id=id) }}" method='POST'>
