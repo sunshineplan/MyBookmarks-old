@@ -2,9 +2,6 @@
   <h3>{% if id == 0 %}Add{% else %}Edit{% endif %} Category</h3>
   <hr>
 </header>
-{% for message in get_flashed_messages() %}
-<div class='alert alert-danger d-inline-flex'>{{ message }}</div>
-{% endfor %}
 <form method='POST' action='/category/{% if id == 0 %}add{% else %}edit/{{ id }}{% endif %}'>
   <div class='form-group'>
     <label for='category'>Category</label>

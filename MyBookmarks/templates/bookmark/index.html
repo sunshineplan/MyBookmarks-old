@@ -5,9 +5,6 @@
   </div>
   <button class='btn btn-primary' onclick="bookmark(0,{{ category['id'] }})">Add Bookmark</button>
 </header>
-{% for message in get_flashed_messages() %}
-<div class='alert alert-danger d-inline-flex'>{{ message }}</div>
-{% endfor %}
 <div class='table-responsive'>
   <table class='table table-sm'>
     <thead>

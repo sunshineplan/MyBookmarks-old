@@ -1,15 +1,8 @@
-{% extends 'base.html' %}
-
-{% block header %}
-<h3>{% block title %}Setting{% endblock %}</h3>
-<hr>
-{% endblock %}
-
-{% block content %}
-{% for message in get_flashed_messages() %}
-<div class="alert alert-danger {% if request.endpoint == 'auth.login' %}login{% else %}d-inline-flex{% endif %}">{{ message }}</div>
-{% endfor %}
-<form method='post'>
+<header style='padding-left: 20px;'>
+  <h3>Setting</h3>
+  <hr>
+</header>
+<form method='post' action='/auth/setting'>
   <div class='form-group'>
     <label for='password'>Current Password</label>
     <input autofocus class='form-control' type='password' name='password' id='password'>
@@ -25,4 +18,3 @@
   <input type='submit' value='Change' class='btn btn-primary'>
   <input type='button' value='Cancel' class='btn btn-primary' onclick="location.href=document.cookie.split('LastVisit=')[1];">
 </form>
-{% endblock %}

@@ -23,7 +23,7 @@ function my_bookmarks(category_id = -1) {
   $.get('/bookmark' + param, function (html) {
     $('.content').html(html);
   }).done(function () {
-    document.title = $('.title').text() + ' - My Bookmarks'
+    document.title = $('.title').text() + ' - My Bookmarks';
   });
   $('.category').removeClass('active');
   $('#' + category_id).addClass('active');
@@ -43,7 +43,7 @@ function category(category_id = 0) {
   $.get(url, function (html) {
     $('.content').html(html);
   }).done(function () {
-    document.title = title + ' - My Bookmarks'
+    document.title = title + ' - My Bookmarks';
   });
 };
 function bookmark(id = 0, category_id = 0) {
@@ -62,7 +62,14 @@ function bookmark(id = 0, category_id = 0) {
   $.get(url, function (html) {
     $('.content').html(html);
   }).done(function () {
-    document.title = title + ' - My Bookmarks'
+    document.title = title + ' - My Bookmarks';
+  });
+};
+function setting() {
+  $.get('/auth/setting', function (html) {
+    $('.content').html(html);
+  }).done(function () {
+    document.title = 'Setting - My Bookmarks';
   });
 };
 function simplify_url() {
