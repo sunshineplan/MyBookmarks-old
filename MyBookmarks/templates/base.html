@@ -5,8 +5,8 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
-<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css'>
-<link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css'>
 <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
 <nav class='navbar navbar-light topbar'>
   <div class='d-flex' style='height: 100%;'>
@@ -28,32 +28,37 @@
 {% if g.user %}
 <nav class='nav flex-column navbar-light sidebar'>
   <div class='category-menu'>
-    <a class='btn btn-primary btn-sm' href="{{ url_for('bookmark.add_category') }}">Add Category</a>
+    <button class='btn btn-primary btn-sm' onclick='category()'>Add Category</button>
     <a class='navbar-brand category' id='-1'>All Bookmarks</a>
     <ul class='navbar-nav' id='categories'></ul>
   </div>
 </nav>
 {% endif %}
-<div class='content' {% if g.user %}style='padding-left: 250px;'{% endif %}>
-  <header {% if g.user %}style='padding-left: 20px;'{% endif %}>
-  {% block header %}{% endblock %}
+<div class='content' {% if g.user %}style='padding-left: 250px;' {% endif %}>
+  <header {% if g.user %}style='padding-left: 20px;' {% endif %}>
+    {% block header %}{% endblock %}
   </header>
-  {% for message in get_flashed_messages() %}
-  <div class="alert alert-danger {% if request.endpoint == 'auth.login' %}login{% else %}d-inline-flex{% endif %}">{{ message }}</div>
-  {% endfor %}
   {% block content %}{% endblock %}
 </div>
+{% if g.user %}
 <script>
   $(function () {
     my_categories();
+    my_bookmarks();
   });
   $(document).on('click', '.category', function () {
     my_bookmarks($(this).prop('id'));
+    if ($(window).width() <= 900) {
+      $('.sidebar').toggle('slide');
+    };
   });
-  $('.toggle').click(function() {
+  $('.toggle').click(function () {
     $('.sidebar').toggle('slide');
   });
-  $('.content').click(function() {
-    $('.sidebar').hide();
+  $('.content').click(function () {
+    if ($('.sidebar').is(':visible') && $(window).width() <= 900) {
+      $('.sidebar').toggle('slide');
+    };
   });
 </script>
+{% endif %}

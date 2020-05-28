@@ -135,6 +135,15 @@ header {
     cursor: default;
 }
 
+.icon {
+    color: #007bff !important;
+    cursor: pointer;
+}
+
+.icon:hover {
+    color: #0056b3 !important;
+}
+
 .table-responsive {
     height: calc(100% - 100px);
     padding: 0 10px;

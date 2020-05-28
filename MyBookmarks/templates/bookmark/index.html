@@ -1,14 +1,13 @@
-{% extends 'base.html' %}
-
-{% block header %}
-<div style='height: 50px;'>
-  <a class='h3'>{% block title %}{{ category['name'] }}{% endblock %}</a>
-  <a class='btn btn-link' href="/category/edit/{{ category['id'] }}"{% if category['id'] <= 0 %} style='display: none;'{% endif %}><i class='material-icons edit'>edit</i></a>
-</div>
-<a class='btn btn-primary' href="/bookmark/add{% if category['id']>0 %}?category_id={{ category['id'] }}{% endif %}">Add Bookmark</a>
-{% endblock %}
-
-{% block content %}
+<header style='padding-left: 20px;'>
+  <div style='height: 50px;'>
+    <a class='h3 title'>{{ category['name'] }}</a>
+    <a class='btn icon' onclick="category({{ category['id'] }})" {% if category['id'] <= 0 %} style='display: none;'{% endif %}><i class='material-icons edit'>edit</i></a>
+  </div>
+  <button class='btn btn-primary' onclick="bookmark(0,{{ category['id'] }})">Add Bookmark</button>
+</header>
+{% for message in get_flashed_messages() %}
+<div class='alert alert-danger d-inline-flex'>{{ message }}</div>
+{% endfor %}
 <div class='table-responsive'>
   <table class='table table-sm'>
     <thead>
@@ -25,7 +24,7 @@
         <td>{{ bookmark['bookmark'] }}</td>
         <td><a href="{{ bookmark['url'] }}" target='_blank' class='url'>{{ bookmark['url'] }}</a></td>
         <td>{{ bookmark['category'] }}</td>
-        <td><a href="/bookmark/edit/{{ bookmark['id'] }}"><i class='material-icons edit'>edit</i></a></td>
+        <td><a class='icon' onclick="bookmark({{ bookmark['id'] }})"><i class='material-icons edit'>edit</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
@@ -50,4 +49,3 @@
     simplify_url();
   });
 </script>
-{% endblock %}

@@ -10,6 +10,12 @@ bp = Blueprint('bookmark', __name__)
 @bp.route('/')
 @login_required
 def index():
+    return render_template('base.html')
+
+
+@bp.route('/bookmark')
+@login_required
+def bookmark():
     '''Show the bookmarks belong the current user.'''
     category_id = request.args.get('category')
     db = get_db()
@@ -72,7 +78,7 @@ def add_category():
             db.execute(
                 'INSERT INTO category (category, user_id) VALUES (?, ?)', (category, g.user['id']))
             db.commit()
-            return redirect(url_for('index'))
+        return redirect(url_for('index'))
     return render_template('bookmark/category.html', id=0, category={})
 
 
@@ -103,10 +109,10 @@ def edit_category(id):
             db.execute(
                 'UPDATE category SET category = ? WHERE id = ? AND user_id = ?', (new, id, g.user['id']))
             db.commit()
-            if last_visit:
-                return redirect(last_visit)
-            else:
-                return redirect(url_for('index'))
+        if last_visit:
+            return redirect(last_visit)
+        else:
+            return redirect(url_for('index'))
     return render_template('bookmark/category.html', id=id, category=category)
 
 
@@ -126,7 +132,8 @@ def delete_category(id):
 def get_category_id(category, user_id):
     if category:
         db = get_db()
-        category_id = db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, user_id)).fetchone()
+        category_id = db.execute(
+            'SELECT id FROM category WHERE category = ? AND user_id = ?', (category, user_id)).fetchone()
         if len(category.encode('utf-8')) > 15:
             return None
         elif category_id:
@@ -166,10 +173,10 @@ def add_bookmark():
             db.execute('INSERT INTO bookmark (bookmark, url, user_id, category_id)'
                        ' VALUES (?, ?, ?, ?)', (bookmark, url, g.user['id'], category_id))
             db.commit()
-            if last_visit:
-                return redirect(last_visit)
-            else:
-                return redirect(url_for('index'))
+        if last_visit:
+            return redirect(last_visit)
+        else:
+            return redirect(url_for('index'))
     return render_template('bookmark/bookmark.html', id=0, bookmark={'category': category})
 
 
@@ -210,10 +217,10 @@ def edit_bookmark(id):
             db.execute('UPDATE bookmark SET bookmark = ?, url = ?, category_id = ?'
                        ' WHERE id = ? AND user_id = ?', (bookmark, url, category_id, id, g.user['id']))
             db.commit()
-            if last_visit:
-                return redirect(last_visit)
-            else:
-                return redirect(url_for('index'))
+        if last_visit:
+            return redirect(last_visit)
+        else:
+            return redirect(url_for('index'))
     return render_template('bookmark/bookmark.html', id=id, bookmark=bookmark)
 
 
