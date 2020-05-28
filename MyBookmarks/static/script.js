@@ -1,6 +1,4 @@
 function my_categories() {
-  var searchParams = new URLSearchParams(window.location.search);
-  var category = searchParams.get('category');
   $.getJSON('/category/get', function (json) {
     $('#category-list').empty();
     $('#categories').empty();
@@ -82,4 +80,8 @@ function simplify_url() {
       $(this).text($(this).attr('href'));
     });
   };
+};
+function goback() {
+  var last = document.cookie.split('LastVisit=')[1];
+  my_bookmarks(last);
 };

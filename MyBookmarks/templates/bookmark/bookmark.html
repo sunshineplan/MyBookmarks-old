@@ -30,7 +30,7 @@
     <small class='form-text text-muted'>Max length: 15 characters. One chinese character equal three characters.</small>
   </div>
   <input type='submit' value='{% if id == 0 %}Add{% else %}Save{% endif %}' class='btn btn-primary'>
-  <input type='button' value='Cancel' class='btn btn-primary' onclick="location.href=document.cookie.split('LastVisit=')[1];">
+  <input type='button' value='Cancel' class='btn btn-primary' onclick='goback()'>
 </form>
 {% if id != 0 %}
 <form action="{{ url_for('bookmark.delete_bookmark', id=id) }}" method='POST'>

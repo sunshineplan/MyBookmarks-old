@@ -6,7 +6,7 @@
 
 {% block content %}
 {% for message in get_flashed_messages() %}
-<div class="alert alert-danger {% if request.endpoint == 'auth.login' %}login{% else %}d-inline-flex{% endif %}">{{ message }}</div>
+<div class='alert alert-danger login'>{{ message }}</div>
 {% endfor %}
 <form class='login' method='POST'>
   <div class='form-group'>

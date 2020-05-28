@@ -29,7 +29,7 @@
 </div>
 <script>
   $(function () {
-    document.cookie = 'LastVisit=' + window.location.href + '; Path=/';
+    document.cookie = "LastVisit={{ category['id'] }}; Path=/";
     $('#mybookmarks').sortable({
       update: function (event, ui) {
         var orig = ui.item.find('td')[0].textContent;
