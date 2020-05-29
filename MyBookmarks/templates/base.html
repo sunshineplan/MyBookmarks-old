@@ -43,8 +43,7 @@
 {% if g.user %}
 <script>
   $(function () {
-    my_categories();
-    my_bookmarks();
+    load(-1);
   });
   $(document).on('click', '.category', function () {
     my_bookmarks($(this).prop('id'));

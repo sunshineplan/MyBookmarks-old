@@ -2,7 +2,7 @@
   <h3>{% if id == 0 %}Add{% else %}Edit{% endif %} Bookmark</h3>
   <hr>
 </header>
-<form id='form' onsubmit='return false'>
+<div class='form'>
   <script>
     $(function () {
       $('input[type="url"]').blur(function () {
@@ -31,9 +31,9 @@
   </div>
   <button class='btn btn-primary' onclick='doBookmark({{ id }})'>{% if id == 0 %}Add{% else %}Save{% endif %}</button>
   <button class='btn btn-primary' onclick='goback()'>Cancel</button>
-</form>
+</div>
 {% if id != 0 %}
-<form action="{{ url_for('bookmark.delete_bookmark', id=id) }}" method='POST'>
+<form class='form' action="{{ url_for('bookmark.delete_bookmark', id=id) }}" method='POST'>
   <input type='submit' value='Delete' class='btn btn-danger' onclick="return confirm('Are you sure?');">
 </form>
 {% endif %}

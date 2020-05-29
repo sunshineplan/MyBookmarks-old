@@ -224,14 +224,10 @@ def edit_bookmark(id):
 def delete_bookmark(id):
     '''Edit a bookmark for the current user.'''
     db = get_db()
-    last_visit = request.cookies.get('LastVisit')
     db.execute('DELETE FROM bookmark WHERE id = ? and user_id = ?',
                (id, g.user['id']))
     db.commit()
-    if last_visit:
-        return redirect(last_visit)
-    else:
-        return redirect(url_for('index'))
+    return redirect(url_for('index'))
 
 
 @bp.route('/reorder', methods=('POST',))

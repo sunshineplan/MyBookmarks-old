@@ -1,15 +1,18 @@
-function my_categories() {
-  $.getJSON('/category/get', function (json) {
+function load(category_id = null) {
+  if (category_id === null) {
+    category_id = document.cookie.split('LastVisit=')[1];
+  }
+  $.getJSON('/category/get', json => {
     $('#category-list').empty();
     $('#categories').empty();
     $('#-1.category').text('All Bookmarks (' + json.total + ')');
-    $.each(json.categories, function (i, item) {
+    $.each(json.categories, (i, item) => {
       $('#category-list').append($('<option>').prop('value', item.category));
       var $li = $("<li><a class='nav-link category' id='" + item.id + "'>" + item.category + ' (' + item.num + ')' + '</a></li>');
       $li.appendTo('#categories');
     });
     $('#categories').append("<li><a class='nav-link category' id=0>Uncategorized (" + json.uncategorized + ')' + '</a></li>');
-  });
+  }).done(() => my_bookmarks(category_id));
 };
 function my_bookmarks(category_id = -1) {
   var param;
@@ -18,11 +21,8 @@ function my_bookmarks(category_id = -1) {
   } else {
     param = '?category=' + category_id;
   };
-  $.get('/bookmark' + param, function (html) {
-    $('.content').html(html);
-  }).done(function () {
-    document.title = $('.title').text() + ' - My Bookmarks';
-  });
+  $.get('/bookmark' + param, html => $('.content').html(html))
+    .done(() => document.title = $('.title').text() + ' - My Bookmarks');
   $('.category').removeClass('active');
   $('#' + category_id).addClass('active');
 };
@@ -38,11 +38,8 @@ function category(category_id = 0) {
     url = '/category/edit/' + category_id;
     title = 'Edit Category';
   };
-  $.get(url, function (html) {
-    $('.content').html(html);
-  }).done(function () {
-    document.title = title + ' - My Bookmarks';
-  });
+  $.get(url, html => $('.content').html(html))
+    .done(() => document.title = title + ' - My Bookmarks');
 };
 function bookmark(id = 0, category_id = 0) {
   var url, title;
@@ -57,18 +54,12 @@ function bookmark(id = 0, category_id = 0) {
     url = '/bookmark/edit/' + id;
     title = 'Edit Bookmark';
   };
-  $.get(url, function (html) {
-    $('.content').html(html);
-  }).done(function () {
-    document.title = title + ' - My Bookmarks';
-  });
+  $.get(url, html => $('.content').html(html))
+    .done(() => document.title = title + ' - My Bookmarks');
 };
 function setting() {
-  $.get('/auth/setting', function (html) {
-    $('.content').html(html);
-  }).done(function () {
-    document.title = 'Setting - My Bookmarks';
-  });
+  $.get('/auth/setting', html => $('.content').html(html))
+    .done(() => document.title = 'Setting - My Bookmarks');
 };
 function doCategory(id) {
   var url;
@@ -77,15 +68,14 @@ function doCategory(id) {
   } else {
     url = '/category/edit/' + id;
   }
-  $.post(url, $('#form').serialize(), function (json) {
-    if (json.status == 1) {
-      my_categories();
-      goback();
-    } else {
+  $.post(url, $('input').serialize(), json => {
+    if (json.status == 0) {
       alert(json.message);
       if (json.error == 1) {
         $('#category').val('');
       };
+    } else {
+      load();
     };
   });
 };
@@ -96,11 +86,8 @@ function doBookmark(id) {
   } else {
     url = '/bookmark/edit/' + id;
   }
-  $.post(url, $('#form').serialize(), function (json) {
-    if (json.status == 1) {
-      my_categories();
-      goback();
-    } else {
+  $.post(url, $('input').serialize(), json => {
+    if (json.status == 0) {
       alert(json.message);
       if (json.error == 1) {
         $('#bookmark').val('');
@@ -109,11 +96,13 @@ function doBookmark(id) {
       } else if (json.error == 3) {
         $('#category').val('');
       };
+    } else {
+      load();
     };
   });
 };
 function doSetting() {
-  $.post('/auth/setting', $('form').serialize(), function (json) {
+  $.post('/auth/setting', $('form').serialize(), json => {
     if (json.status == 1) {
       alert('Password Changed. Please Re-login!');
       window.location = '/auth/login';
@@ -130,13 +119,9 @@ function doSetting() {
 };
 function simplify_url() {
   if (isMobile.matches) {
-    $('.url').each(function () {
-      $(this).text($(this).text().replace(/https?:\/\/(www\.)?/i, ''));
-    });
+    $('.url').each(() => $(this).text($(this).text().replace(/https?:\/\/(www\.)?/i, '')));
   } else {
-    $('.url').each(function () {
-      $(this).text($(this).attr('href'));
-    });
+    $('.url').each(() => $(this).text($(this).attr('href')));
   };
 };
 function goback() {
