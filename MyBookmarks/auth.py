@@ -37,6 +37,8 @@ def load_logged_in_user():
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     '''Log in a user by adding the user id to the session.'''
+    if g.user:
+        return redirect(url_for('index'))
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
