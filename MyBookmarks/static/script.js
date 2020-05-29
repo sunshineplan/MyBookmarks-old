@@ -21,8 +21,17 @@ function my_bookmarks(category_id = -1) {
   } else {
     param = '?category=' + category_id;
   };
-  $.get('/bookmark' + param, html => $('.content').html(html))
-    .done(() => document.title = $('.title').text() + ' - My Bookmarks');
+  fetch('/bookmark' + param).then(response => {
+    if (response.redirected) {
+      window.location = '/auth/login';
+      return;
+    } else {
+      return response.text();
+    };
+  }).then(html => {
+    $('.content').html(html);
+    document.title = $('.title').text() + ' - My Bookmarks'; 
+  });
   $('.category').removeClass('active');
   $('#' + category_id).addClass('active');
 };
