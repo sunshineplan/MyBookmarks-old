@@ -77,17 +77,19 @@ function doCategory(id) {
   } else {
     url = '/category/edit/' + id;
   }
-  $.post(url, $('input').serialize(), json => {
-    if (json.status == 0) {
-      swal('Error', json.message, 'error').then(() => {
-        if (json.error == 1) {
-          $('#category').val('');
-        };
-      });
-    } else {
-      load();
-    };
-  });
+  if (valid())
+    $.post(url, $('input').serialize(), json => {
+      $('.form').removeClass('was-validated');
+      if (json.status == 0) {
+        swal('Error', json.message, 'error').then(() => {
+          if (json.error == 1) {
+            $('#category').val('');
+          };
+        });
+      } else {
+        load();
+      };
+    });
 };
 function doBookmark(id) {
   var url;
@@ -96,21 +98,23 @@ function doBookmark(id) {
   } else {
     url = '/bookmark/edit/' + id;
   }
-  $.post(url, $('input').serialize(), json => {
-    if (json.status == 0) {
-      swal('Error', json.message, 'error').then(() => {
-        if (json.error == 1) {
-          $('#bookmark').val('');
-        } else if (json.error == 2) {
-          $('#url').val('');
-        } else if (json.error == 3) {
-          $('#category').val('');
-        };
-      });
-    } else {
-      load();
-    };
-  });
+  if (valid())
+    $.post(url, $('input').serialize(), json => {
+      $('.form').removeClass('was-validated');
+      if (json.status == 0) {
+        swal('Error', json.message, 'error').then(() => {
+          if (json.error == 1) {
+            $('#bookmark').val('');
+          } else if (json.error == 2) {
+            $('#url').val('');
+          } else if (json.error == 3) {
+            $('#category').val('');
+          };
+        });
+      } else {
+        load();
+      };
+    });
 };
 function doDelete(mode, id) {
   var url;
@@ -135,22 +139,34 @@ function doDelete(mode, id) {
   });
 };
 function doSetting() {
-  $.post('/auth/setting', $('input').serialize(), json => {
-    if (json.status == 1) {
-      swal('Success', 'Your password has changed. Please Re-login!', 'success')
-        .then(() => window.location = '/auth/login');
-    } else {
-      swal('Error', json.message, 'error').then(() => {
-        if (json.error == 1) {
-          $('#password').val('');
-        } else if (json.error == 2) {
-          $('#password1').val('');
-          $('#password2').val('');
-        };
-      });
+  if (valid())
+    $.post('/auth/setting', $('input').serialize(), json => {
+      $('.form').removeClass('was-validated');
+      if (json.status == 1) {
+        swal('Success', 'Your password has changed. Please Re-login!', 'success')
+          .then(() => window.location = '/auth/login');
+      } else {
+        swal('Error', json.message, 'error').then(() => {
+          if (json.error == 1) {
+            $('#password').val('');
+          } else if (json.error == 2) {
+            $('#password1').val('');
+            $('#password2').val('');
+          };
+        });
+      };
+    });
+};
+function valid() {
+  var result = true
+  $('input').each(function () {
+    if ($(this)[0].checkValidity() === false) {
+      $('.form').addClass('was-validated');
+      result = false;
     };
   });
-};
+  return result;
+}
 function simplify_url() {
   if (isMobile.matches) {
     $('.url').each(function () { $(this).text($(this).text().replace(/https?:\/\/(www\.)?/i, '')) });

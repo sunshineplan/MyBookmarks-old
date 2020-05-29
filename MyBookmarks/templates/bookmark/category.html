@@ -6,6 +6,7 @@
   <div class='form-group'>
     <label for='category'>Category</label>
     <input class='form-control' name='category' id='category' maxlength=15 value="{{ request.form['category'] or category['category'] }}" required>
+    <div class='invalid-feedback'>This field is required.</div>
     <small class='form-text text-muted'>Max length: 15 characters. One chinese character equal three characters.</small>
   </div>
   <button class='btn btn-primary' onclick='doCategory({{ id }})' id='submit'>{% if id == 0 %}Add{% else %}Save{% endif %}</button>
