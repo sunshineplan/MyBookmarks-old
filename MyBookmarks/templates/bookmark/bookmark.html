@@ -5,7 +5,7 @@
 <div class='form'>
   <script>
     $(() => {
-      $('input[type="url"]').blur(() => {
+      $('input[type="url"]').blur(function () {
         var string = $(this).val();
         if (!string.match(/^https?:/) && string.length) {
           string = 'http://' + string;

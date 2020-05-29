@@ -147,9 +147,9 @@ function doSetting() {
 };
 function simplify_url() {
   if (isMobile.matches) {
-    $('.url').each(() => $(this).text($(this).text().replace(/https?:\/\/(www\.)?/i, '')));
+    $('.url').each(function () { $(this).text($(this).text().replace(/https?:\/\/(www\.)?/i, '')) });
   } else {
-    $('.url').each(() => $(this).text($(this).attr('href')));
+    $('.url').each(function () { $(this).text($(this).attr('href')) });
   };
 };
 function goback() {

@@ -31,7 +31,7 @@
   $(() => {
     document.cookie = "LastVisit={{ category['id'] }}; Path=/";
     $('#mybookmarks').sortable({
-      update: function (event, ui) {
+      update: (event, ui) => {
         var orig = ui.item.find('td')[0].textContent;
         if (ui.item.prev().length != 0) {
           var dest = ui.item.prev().find('td')[0].textContent;

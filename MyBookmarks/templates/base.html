@@ -43,7 +43,7 @@
 {% if g.user %}
 <script>
   $(() => load(-1));
-  $(document).on('click', '.category', () => {
+  $(document).on('click', '.category', function () {
     my_bookmarks($(this).prop('id'));
     if ($(window).width() <= 900) {
       $('.sidebar').toggle('slide');
