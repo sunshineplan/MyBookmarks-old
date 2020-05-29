@@ -79,10 +79,11 @@ function doCategory(id) {
   }
   $.post(url, $('input').serialize(), json => {
     if (json.status == 0) {
-      alert(json.message);
-      if (json.error == 1) {
-        $('#category').val('');
-      };
+      swal('Error', json.message, 'error').then(() => {
+        if (json.error == 1) {
+          $('#category').val('');
+        };
+      });
     } else {
       load();
     };
@@ -97,14 +98,15 @@ function doBookmark(id) {
   }
   $.post(url, $('input').serialize(), json => {
     if (json.status == 0) {
-      alert(json.message);
-      if (json.error == 1) {
-        $('#bookmark').val('');
-      } else if (json.error == 2) {
-        $('#url').val('');
-      } else if (json.error == 3) {
-        $('#category').val('');
-      };
+      swal('Error', json.message, 'error').then(() => {
+        if (json.error == 1) {
+          $('#bookmark').val('');
+        } else if (json.error == 2) {
+          $('#url').val('');
+        } else if (json.error == 3) {
+          $('#category').val('');
+        };
+      });
     } else {
       load();
     };
@@ -119,29 +121,33 @@ function doDelete(mode, id) {
   } else {
     return false;
   };
-  $.post(url, json => {
-    if (json.status == 1) {
-      if (mode == 'bookmark') {
-        load();
-      } else {
-        load(-1);
-      };
+  swal('Are you sure?', 'This ' + mode + ' will be deleted permanently.', 'warning', {
+    buttons: true,
+    dangerMode: true,
+  }).then(confirm => {
+    if (confirm) {
+      $.post(url, json => {
+        if (json.status == 1) {
+          if (mode == 'bookmark') load(); else load(-1);
+        };
+      });
     };
   });
 };
 function doSetting() {
   $.post('/auth/setting', $('input').serialize(), json => {
     if (json.status == 1) {
-      alert('Password Changed. Please Re-login!');
-      window.location = '/auth/login';
+      swal('Success', 'Your password has changed. Please Re-login!', 'success')
+        .then(() => window.location = '/auth/login');
     } else {
-      alert(json.message);
-      if (json.error == 1) {
-        $('#password').val('');
-      } else if (json.error == 2) {
-        $('#password1').val('');
-        $('#password2').val('');
-      };
+      swal('Error', json.message, 'error').then(() => {
+        if (json.error == 1) {
+          $('#password').val('');
+        } else if (json.error == 2) {
+          $('#password1').val('');
+          $('#password2').val('');
+        };
+      });
     };
   });
 };
