@@ -101,6 +101,25 @@ function doBookmark(id) {
     };
   });
 };
+function doDelete(mode, id) {
+  var url;
+  if (mode == 'category') {
+    url = '/category/delete/' + id;
+  } else if (mode == 'bookmark') {
+    url = '/bookmark/delete/' + id;
+  } else {
+    return false;
+  };
+  $.post(url, json => {
+    if (json.status == 1) {
+      if (mode == 'bookmark') {
+        load();
+      } else {
+        load(-1);
+      };
+    };
+  });
+};
 function doSetting() {
   $.post('/auth/setting', $('form').serialize(), json => {
     if (json.status == 1) {

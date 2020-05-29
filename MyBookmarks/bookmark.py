@@ -1,5 +1,4 @@
-from flask import (Blueprint, abort, g, jsonify, redirect, render_template,
-                   request, url_for)
+from flask import Blueprint, abort, g, jsonify, render_template, request
 
 from MyBookmarks.auth import login_required
 from MyBookmarks.db import get_db
@@ -123,7 +122,7 @@ def delete_category(id):
     db.execute('UPDATE bookmark SET category_id = 0 WHERE category_id = ? and user_id = ?',
                (id, g.user['id']))
     db.commit()
-    return redirect(url_for('index'))
+    return jsonify({'status': 1})
 
 
 def get_category_id(category, user_id):
@@ -227,7 +226,7 @@ def delete_bookmark(id):
     db.execute('DELETE FROM bookmark WHERE id = ? and user_id = ?',
                (id, g.user['id']))
     db.commit()
-    return redirect(url_for('index'))
+    return jsonify({'status': 1})
 
 
 @bp.route('/reorder', methods=('POST',))
