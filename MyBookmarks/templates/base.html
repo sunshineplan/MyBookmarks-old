@@ -42,19 +42,22 @@
 </div>
 {% if g.user %}
 <script>
-  $(function () {
-    load(-1);
-  });
-  $(document).on('click', '.category', function () {
+  $(() => load(-1));
+  $(document).on('click', '.category', () => {
     my_bookmarks($(this).prop('id'));
     if ($(window).width() <= 900) {
       $('.sidebar').toggle('slide');
     };
   });
-  $('.toggle').click(function () {
+  $(document).on('keyup', 'input', event => {
+    if (event.key == 'Enter') {
+      $('#submit').click();
+    };
+  });
+  $('.toggle').click(() => {
     $('.sidebar').toggle('slide');
   });
-  $('.content').click(function () {
+  $('.content').click(() => {
     if ($('.sidebar').is(':visible') && $(window).width() <= 900) {
       $('.sidebar').toggle('slide');
     };

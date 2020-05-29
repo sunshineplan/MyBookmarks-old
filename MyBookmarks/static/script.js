@@ -30,7 +30,7 @@ function my_bookmarks(category_id = -1) {
     };
   }).then(html => {
     $('.content').html(html);
-    document.title = $('.title').text() + ' - My Bookmarks'; 
+    document.title = $('.title').text() + ' - My Bookmarks';
   });
   $('.category').removeClass('active');
   $('#' + category_id).addClass('active');
@@ -48,7 +48,7 @@ function category(category_id = 0) {
     title = 'Edit Category';
   };
   $.get(url, html => $('.content').html(html))
-    .done(() => document.title = title + ' - My Bookmarks');
+    .done(() => { document.title = title + ' - My Bookmarks'; $('#category').focus() });
 };
 function bookmark(id = 0, category_id = 0) {
   var url, title;
@@ -64,11 +64,11 @@ function bookmark(id = 0, category_id = 0) {
     title = 'Edit Bookmark';
   };
   $.get(url, html => $('.content').html(html))
-    .done(() => document.title = title + ' - My Bookmarks');
+    .done(() => { document.title = title + ' - My Bookmarks'; $('#bookmark').focus() });
 };
 function setting() {
   $.get('/auth/setting', html => $('.content').html(html))
-    .done(() => document.title = 'Setting - My Bookmarks');
+    .done(() => { document.title = 'Setting - My Bookmarks'; $('#password').focus() });
 };
 function doCategory(id) {
   var url;

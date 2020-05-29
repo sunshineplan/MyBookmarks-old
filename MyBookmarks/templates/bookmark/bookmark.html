@@ -4,8 +4,8 @@
 </header>
 <div class='form'>
   <script>
-    $(function () {
-      $('input[type="url"]').blur(function () {
+    $(() => {
+      $('input[type="url"]').blur(() => {
         var string = $(this).val();
         if (!string.match(/^https?:/) && string.length) {
           string = 'http://' + string;
@@ -29,7 +29,7 @@
     </datalist>
     <small class='form-text text-muted'>Max length: 15 characters. One chinese character equal three characters.</small>
   </div>
-  <button class='btn btn-primary' onclick='doBookmark({{ id }})'>{% if id == 0 %}Add{% else %}Save{% endif %}</button>
+  <button class='btn btn-primary' onclick='doBookmark({{ id }})' id='submit'>{% if id == 0 %}Add{% else %}Save{% endif %}</button>
   <button class='btn btn-primary' onclick='goback()'>Cancel</button>
 </div>
 {% if id != 0 %}
