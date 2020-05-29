@@ -130,7 +130,7 @@ function doDelete(mode, id) {
   });
 };
 function doSetting() {
-  $.post('/auth/setting', $('form').serialize(), json => {
+  $.post('/auth/setting', $('input').serialize(), json => {
     if (json.status == 1) {
       alert('Password Changed. Please Re-login!');
       window.location = '/auth/login';
