@@ -21,6 +21,7 @@ function my_bookmarks(category_id = -1) {
   } else {
     param = '?category=' + category_id;
   };
+  loading();
   fetch('/bookmark' + param).then(response => {
     if (response.redirected) {
       window.location = '/auth/login';
@@ -29,6 +30,7 @@ function my_bookmarks(category_id = -1) {
       return response.text();
     };
   }).then(html => {
+    loading(false);
     $('.content').html(html);
     document.title = $('.title').text() + ' - My Bookmarks';
   });
@@ -47,8 +49,12 @@ function category(category_id = 0) {
     url = '/category/edit/' + category_id;
     title = 'Edit Category';
   };
-  $.get(url, html => $('.content').html(html))
-    .done(() => { document.title = title + ' - My Bookmarks'; $('#category').focus() });
+  loading();
+  $.get(url, html => $('.content').html(html)).done(() => {
+    loading(false);
+    document.title = title + ' - My Bookmarks';
+    $('#category').focus();
+  });
 };
 function bookmark(id = 0, category_id = 0) {
   var url, title;
@@ -63,12 +69,20 @@ function bookmark(id = 0, category_id = 0) {
     url = '/bookmark/edit/' + id;
     title = 'Edit Bookmark';
   };
-  $.get(url, html => $('.content').html(html))
-    .done(() => { document.title = title + ' - My Bookmarks'; $('#bookmark').focus() });
+  loading();
+  $.get(url, html => $('.content').html(html)).done(() => {
+    loading(false);
+    document.title = title + ' - My Bookmarks';
+    $('#bookmark').focus();
+  });
 };
 function setting() {
-  $.get('/auth/setting', html => $('.content').html(html))
-    .done(() => { document.title = 'Setting - My Bookmarks'; $('#password').focus() });
+  loading();
+  $.get('/auth/setting', html => $('.content').html(html)).done(() => {
+    loading(false);
+    document.title = 'Setting - My Bookmarks';
+    $('#password').focus()
+  });
 };
 function doCategory(id) {
   var url;
@@ -178,3 +192,12 @@ function goback() {
   var last = document.cookie.split('LastVisit=')[1];
   my_bookmarks(last);
 };
+function loading(show = true) {
+  if (show) {
+    $('.loading').css('display', 'flex');
+    $('.content').css('opacity', 0.5);
+  } else {
+    $('.loading').hide();
+    $('.content').css('opacity', 1);
+  }
+}

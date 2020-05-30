@@ -1,3 +1,7 @@
+:root {
+    --sk-color: #1a73e8;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
                  'Microsoft YaHei New', 'Microsoft Yahei', 微软雅黑, 宋体, SimSun, STXihei, 华文细黑, sans-serif;
@@ -128,6 +132,16 @@ form.login {
     width: 100%;
 }
 
+.loading {
+    position: fixed;
+    z-index: 2;
+    top: 70px;
+    left: 250px;
+    height: calc(100% - 70px);
+    width: calc(100% - 250px);
+    display: none;
+}
+
 header {
     height: 100px;
 }
@@ -221,6 +235,11 @@ td {
 
     .content {
         padding-left: 0 !important;
+    }
+
+    .loading {
+        left: 0;
+        width: 100%;
     }
 }
 

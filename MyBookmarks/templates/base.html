@@ -7,6 +7,7 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js'></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css'>
+<link rel='stylesheet' href="{{ url_for('static', filename='spinkit.css') }}">
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css'>
 <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
 <nav class='navbar navbar-light topbar'>
@@ -35,10 +36,16 @@
   </div>
 </nav>
 {% endif %}
+<div class='loading'>
+  <div class='sk-wave sk-center'>
+    <div class='sk-wave-rect'></div>
+    <div class='sk-wave-rect'></div>
+    <div class='sk-wave-rect'></div>
+    <div class='sk-wave-rect'></div>
+    <div class='sk-wave-rect'></div>
+  </div>
+</div>
 <div class='content' {% if g.user %}style='padding-left: 250px;' {% endif %}>
-  <header {% if g.user %}style='padding-left: 20px;' {% endif %}>
-    {% block header %}{% endblock %}
-  </header>
   {% block content %}{% endblock %}
 </div>
 {% if g.user %}
