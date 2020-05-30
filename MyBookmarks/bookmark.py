@@ -68,8 +68,10 @@ def add_category():
     '''Create a new category for the current user.'''
     if request.method == 'POST':
         db = get_db()
-        category = request.form.get('category')
-        if len(category.encode('utf-8')) > 15:
+        category = request.form.get('category').strip()
+        if category == '':
+            message = 'Category name is empty.'
+        elif len(category.encode('utf-8')) > 15:
             message = 'Category name exceeded length limit.'
         elif db.execute('SELECT id FROM category WHERE category = ? AND user_id = ?', (category, g.user['id'])).fetchone() is not None:
             message = f'Category {category} is already existed.'
@@ -93,9 +95,12 @@ def edit_category(id):
         abort(403)
     if request.method == 'POST':
         old = category['category']
-        new = request.form.get('category')
+        new = request.form.get('category').strip()
         error = 0
-        if old == new:
+        if new == '':
+            message = 'New category name is empty.'
+            error = 1
+        elif old == new:
             message = 'New category is same as old category.'
         elif len(new.encode('utf-8')) > 15:
             message = 'Category name exceeded length limit.'
@@ -154,12 +159,15 @@ def add_bookmark():
     else:
         category = ''
     if request.method == 'POST':
-        category = request.form.get('category')
-        bookmark = request.form.get('bookmark')
-        url = request.form.get('url')
+        category = request.form.get('category').strip()
+        bookmark = request.form.get('bookmark').strip()
+        url = request.form.get('url').strip()
         category_id = get_category_id(category, g.user['id'])
         error = 0
-        if db.execute('SELECT id FROM bookmark WHERE bookmark = ? AND user_id = ?', (bookmark, g.user['id'])).fetchone() is not None:
+        if bookmark == '':
+            message = f'Bookmark name is empty.'
+            error = 1
+        elif db.execute('SELECT id FROM bookmark WHERE bookmark = ? AND user_id = ?', (bookmark, g.user['id'])).fetchone() is not None:
             message = f'Bookmark name {bookmark} is already existed.'
             error = 1
         elif db.execute('SELECT id FROM bookmark WHERE url = ? AND user_id = ?', (url, g.user['id'])).fetchone() is not None:
@@ -193,12 +201,15 @@ def edit_bookmark(id):
             bookmark['category'] = ''
     if request.method == 'POST':
         old = (bookmark['bookmark'], bookmark['url'], bookmark['category'])
-        bookmark = request.form.get('bookmark')
-        url = request.form.get('url')
-        category = request.form.get('category')
+        bookmark = request.form.get('bookmark').strip()
+        url = request.form.get('url').strip()
+        category = request.form.get('category').strip()
         category_id = get_category_id(category, g.user['id'])
         error = 0
-        if old == (bookmark, url, category):
+        if bookmark == '':
+            message = f'Bookmark name is empty.'
+            error = 1
+        elif old == (bookmark, url, category):
             message = 'New bookmark is same as old bookmark.'
         elif db.execute('SELECT id FROM bookmark WHERE bookmark = ? AND id != ? AND user_id = ?', (bookmark, id, g.user['id'])).fetchone() is not None:
             message = f'Bookmark name {bookmark} is already existed.'

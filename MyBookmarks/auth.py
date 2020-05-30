@@ -40,7 +40,7 @@ def login():
     if g.user:
         return redirect(url_for('index'))
     if request.method == 'POST':
-        username = request.form.get('username')
+        username = request.form.get('username').strip()
         password = request.form.get('password')
         rememberme = request.form.get('rememberme')
         db = get_db()
