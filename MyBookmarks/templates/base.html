@@ -57,7 +57,7 @@
       $('.sidebar').toggle('slide');
     };
   });
-  $(document).on('keyup', event => {
+  $(document).on('keyup', '.content', event => {
     if (event.key == 'Enter') {
       $('#submit').click();
     };
