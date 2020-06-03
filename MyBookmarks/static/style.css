@@ -201,7 +201,11 @@ td {
     width: 250px;
 }
 
-.btn-danger {
+.swal {
+    margin: 8px 6px;
+}
+
+.delete {
     margin-top: 8px;
 }
 

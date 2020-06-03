@@ -1,3 +1,9 @@
+const BootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: 'swal btn btn-primary'
+  },
+  buttonsStyling: false
+});
 function load(category_id = null) {
   if (category_id === null) {
     category_id = document.cookie.split('LastVisit=')[1];
@@ -95,7 +101,7 @@ function doCategory(id) {
     $.post(url, $('input').serialize(), json => {
       $('.form').removeClass('was-validated');
       if (json.status == 0) {
-        swal('Error', json.message, 'error').then(() => {
+        BootstrapButtons.fire('Error', json.message, 'error').then(() => {
           if (json.error == 1) {
             $('#category').val('');
           };
@@ -116,7 +122,7 @@ function doBookmark(id) {
     $.post(url, $('input').serialize(), json => {
       $('.form').removeClass('was-validated');
       if (json.status == 0) {
-        swal('Error', json.message, 'error').then(() => {
+        BootstrapButtons.fire('Error', json.message, 'error').then(() => {
           if (json.error == 1) {
             $('#bookmark').val('');
           } else if (json.error == 2) {
@@ -139,11 +145,20 @@ function doDelete(mode, id) {
   } else {
     return false;
   };
-  swal('Are you sure?', 'This ' + mode + ' will be deleted permanently.', 'warning', {
-    buttons: true,
-    dangerMode: true,
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This ' + mode + ' will be deleted permanently.',
+    icon: 'warning',
+    confirmButtonText: 'Delete',
+    showCancelButton: true,
+    focusCancel: true,
+    customClass: {
+      confirmButton: 'swal btn btn-danger',
+      cancelButton: 'swal btn btn-primary'
+    },
+    buttonsStyling: false
   }).then(confirm => {
-    if (confirm) {
+    if (confirm.isConfirmed) {
       $.post(url, json => {
         if (json.status == 1) {
           if (mode == 'bookmark') load(); else load(-1);
@@ -157,10 +172,10 @@ function doSetting() {
     $.post('/auth/setting', $('input').serialize(), json => {
       $('.form').removeClass('was-validated');
       if (json.status == 1) {
-        swal('Success', 'Your password has changed. Please Re-login!', 'success')
+        BootstrapButtons.fire('Success', 'Your password has changed. Please Re-login!', 'success')
           .then(() => window.location = '/auth/login');
       } else {
-        swal('Error', json.message, 'error').then(() => {
+        BootstrapButtons.fire('Error', json.message, 'error').then(() => {
           if (json.error == 1) {
             $('#password').val('');
           } else if (json.error == 2) {
