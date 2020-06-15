@@ -54,9 +54,17 @@ function category(category_id = 0) {
     title = 'Edit Category';
   };
   loading();
-  $.get(url, html => $('.content').html(html)).done(() => {
+  fetch(url).then(response => {
+    if (response.redirected) {
+      window.location = '/auth/login';
+      return;
+    } else {
+      return response.text();
+    };
+  }).then(html => {
     loading(false);
-    document.title = title + ' - My Bookmarks';
+    $('.content').html(html);
+    document.title = $('.title').text() + ' - My Bookmarks';
     $('#category').focus();
   });
 };
@@ -74,9 +82,17 @@ function bookmark(id = 0, category_id = 0) {
     title = 'Edit Bookmark';
   };
   loading();
-  $.get(url, html => $('.content').html(html)).done(() => {
+  fetch(url).then(response => {
+    if (response.redirected) {
+      window.location = '/auth/login';
+      return;
+    } else {
+      return response.text();
+    };
+  }).then(html => {
     loading(false);
-    document.title = title + ' - My Bookmarks';
+    $('.content').html(html);
+    document.title = $('.title').text() + ' - My Bookmarks';
     $('#bookmark').focus();
   });
 };
