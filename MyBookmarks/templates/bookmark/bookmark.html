@@ -28,6 +28,9 @@
     <label for='category'>Category</label>
     <input class='form-control' list='category-list' name='category' id='category' maxlength=15 value="{{ request.form['category'] or bookmark['category'] }}">
     <datalist id='category-list'>
+    {% for i in categories%}
+      <option value="{{ i['category'] }}"></option>
+    {% endfor %}
     </datalist>
     <small class='form-text text-muted'>Max length: 15 characters. One chinese character equal three characters.</small>
   </div>

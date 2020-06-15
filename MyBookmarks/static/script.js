@@ -9,11 +9,9 @@ function load(category_id = null) {
     category_id = document.cookie.split('LastVisit=')[1];
   }
   $.getJSON('/category/get', json => {
-    $('#category-list').empty();
     $('#categories').empty();
     $('#-1.category').text('All Bookmarks (' + json.total + ')');
     $.each(json.categories, (i, item) => {
-      $('#category-list').append($('<option>').prop('value', item.category));
       var $li = $("<li><a class='nav-link category' id='" + item.id + "'>" + item.category + ' (' + item.num + ')' + '</a></li>');
       $li.appendTo('#categories');
     });

@@ -158,6 +158,8 @@ def add_bookmark():
                               (category_id, g.user['id'])).fetchone()['category']
     else:
         category = ''
+    categories = db.execute(
+        'SELECT category FROM category WHERE user_id = ? ORDER BY category', (g.user['id'],)).fetchall()
     if request.method == 'POST':
         category = request.form.get('category').strip()
         bookmark = request.form.get('bookmark').strip()
@@ -182,7 +184,7 @@ def add_bookmark():
             db.commit()
             return jsonify({'status': 1})
         return jsonify({'status': 0, 'message': message, 'error': error})
-    return render_template('bookmark/bookmark.html', id=0, bookmark={'category': category})
+    return render_template('bookmark/bookmark.html', id=0, bookmark={'category': category}, categories=categories)
 
 
 @bp.route('/bookmark/edit/<int:id>', methods=('GET', 'POST'))
@@ -199,6 +201,8 @@ def edit_bookmark(id):
     else:
         if not bookmark['category']:
             bookmark['category'] = ''
+    categories = db.execute(
+        'SELECT category FROM category WHERE user_id = ? ORDER BY category', (g.user['id'],)).fetchall()
     if request.method == 'POST':
         old = (bookmark['bookmark'], bookmark['url'], bookmark['category'])
         bookmark = request.form.get('bookmark').strip()
@@ -226,7 +230,7 @@ def edit_bookmark(id):
             db.commit()
             return jsonify({'status': 1})
         return jsonify({'status': 0, 'message': message, 'error': error})
-    return render_template('bookmark/bookmark.html', id=id, bookmark=bookmark)
+    return render_template('bookmark/bookmark.html', id=id, bookmark=bookmark, categories=categories)
 
 
 @bp.route('/bookmark/delete/<int:id>', methods=('POST',))
