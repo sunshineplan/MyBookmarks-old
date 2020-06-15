@@ -38,7 +38,12 @@
         } else {
           dest = '#TOP_POSITION#';
         };
-        $.post('/reorder', { orig: orig, dest: dest });
+        if (ui.item.next().length != 0) {
+          var next = ui.item.next().find('td')[0].textContent;
+        } else {
+          next = '#BOTTOM_POSITION#';
+        };
+        $.post('/reorder', { orig: orig, dest: dest, refer: next });
       }
     });
     isMobile = window.matchMedia('(max-width: 700px)');

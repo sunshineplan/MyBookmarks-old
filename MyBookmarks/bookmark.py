@@ -248,6 +248,7 @@ def delete_bookmark(id):
 def reorder():
     orig = request.form.get('orig')
     dest = request.form.get('dest')
+    refer = request.form.get('refer')
     db = get_db()
     orig_seq = db.execute(
         'SELECT seq FROM bookmark WHERE bookmark = ? AND user_id = ?', (orig, g.user['id'])).fetchone()['seq']
@@ -255,7 +256,8 @@ def reorder():
         dest_seq = db.execute(
             'SELECT seq FROM bookmark WHERE bookmark = ? AND user_id = ?', (dest, g.user['id'])).fetchone()['seq']
     else:
-        dest_seq = 0
+        dest_seq = db.execute(
+            'SELECT seq FROM bookmark WHERE bookmark = ? AND user_id = ?', (refer, g.user['id'])).fetchone()['seq']-1
     if orig_seq > dest_seq:
         dest_seq += 1
         db.execute('UPDATE bookmark SET seq = seq+1 WHERE seq >= ? AND user_id = ? AND seq < ?',
