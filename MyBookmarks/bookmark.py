@@ -245,6 +245,7 @@ def delete_bookmark(id):
 
 
 @bp.route('/reorder', methods=('POST',))
+@login_required
 def reorder():
     orig = request.form.get('orig')
     dest = request.form.get('dest')
